@@ -11,18 +11,21 @@ const Search = () => {
     useEffect(() => {
         const client_id = process.env.REACT_APP_CLIENT_ID;
         const client_secret = process.env.REACT_APP_CLIENT_SECRET;
+        console.log("id:", client_id);
+        console.log("secret:", client_secret);
         reqAccessToken(client_id, client_secret)
             .then((response) => response.json())
             .then((data) => {
                 setAccessToken(data["access_token"]);
                 console.log("Found Access Token");
+                console.log(data)
             })
             .catch((err) => {
                 console.error(err);
             });
     }, []); // only on first render
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         console.log(searchName + ", " + searchType)
 
         if (accessToken.length === 0) {
@@ -30,9 +33,18 @@ const Search = () => {
             return;
         }
 
-        
+        const url = "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb";
+        const headers = {
+            "Authorization": "Bearer " + accessToken
+        };
 
-        console.log(process.env.REACT_APP_CLIENT_ID)
+        const response = await fetch(url, {
+            headers
+        });
+
+        const actual_data = response.json();
+
+        console.log(actual_data);
     }
 
     function handleChange(e) {

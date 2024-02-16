@@ -15,10 +15,10 @@ async function reqAccessToken(client_id, client_secret) {
     const response = await fetch(url, {
         headers,
         method: 'POST',
-        body: `grant-type=client_credentials&client_id=${client_id}&client_secret=${client_secret}`
+        body: `grant_type=client_credentials&client_id=${client_id}&client_secret=${client_secret}`
     });
 
     return response;
 }
 
-export default ReqAccessToken; 
+export default reqAccessToken; 
