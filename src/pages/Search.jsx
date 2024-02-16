@@ -1,13 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import reqAccessToken from "../utilities/Auth";
 
 const Search = () => {
     const [searchName, setSearchName] = useState("");
     const [searchType, setSearchType] = useState("songname");
+    const [accessToken, setAccessToken] = useState("");
+
+    useEffect(() => {
+        const client_id = process.env.REACT_APP_CLIENT_ID;
+        const client_secret = process.env.REACT_APP_CLIENT_SECRET;
+        reqAccessToken(client_id, client_secret)
+            .then((response) => response.json())
+            .then((data) => {
+                setAccessToken(data["access_token"]);
+                console.log("Found Access Token");
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []); // only on first render
 
     function handleSubmit(event) {
         console.log(searchName + ", " + searchType)
+
+        if (accessToken.length === 0) {
+            console.log("Get access token!!!!!!")
+            return;
+        }
+
+        
+
+        console.log(process.env.REACT_APP_CLIENT_ID)
     }
 
     function handleChange(e) {
