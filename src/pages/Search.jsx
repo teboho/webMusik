@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Image } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import reqAccessToken from "../utilities/Auth";
+import SongItem from "./SongItem";
 
 const Search = () => {
     const [searchName, setSearchName] = useState("");
@@ -117,14 +118,18 @@ const Search = () => {
                     onSelect={handleSelect}
                     options={[
                         {
+                            key: "track",
                             value: "track",
                             label: "Song name",
                         },
                         {
+                            key: "artist",
                             value: "artist",
                             label: "Artist name"
                         },
                         {
+                            
+                            key: "track",
                             value: "genre",
                             label: "Genre"
                         },
@@ -139,8 +144,13 @@ const Search = () => {
             </Form.Item>
         </Form>
         { 
-                tracks.map(track => {
-                    return <p>{track.name}</p>
+                tracks.map((track, i) => {
+                    return (
+                    <>
+                        <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]}/>
+                        {/* <p>{track.name}</p> */}
+                    </>
+                    );
                 })
                         
         }
