@@ -13,11 +13,11 @@ function App() {
     <BrowserRouter>
       <NavBar />
       <Routes>
-        <Route index element={<Home />} />
+        <Route index element={<Search />} />
         <Route path="about" element={<About />} />
         <Route path="search" element={<Search />} />
       </Routes>
-      {/* <Footer style={{position: "absolute", bottom: 0, width:"100%" }}>Footer</Footer> */}
+      <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>
     </BrowserRouter>
   );
 }

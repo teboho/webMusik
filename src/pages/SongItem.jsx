@@ -1,32 +1,58 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {Card, Image, Typography} from "antd";
+import {Card, Image, Typography, Flex, Button } from "antd";
 
 const { Title }  = Typography;
 
-const SongItem = (props) => {
+const cardStyle = {
+    width: 620
+};
+const imgStyle = {
+    display: 'block',
+    width: 273
+}; 
 
+const SongItem = (props) => {
     return (
         <Card
             title={props.name}
-            extra={<Link to={props.artistLink}>{props.artist}</Link>}
-            style={{width: "fit-content"}}
+            hoverable
+            style={cardStyle}
+            styles={{
+                body: {
+                    padding: 0,
+                    overflow: "hidden"
+                }
+            }}
         >
-            {
-                props.artists.map((artist, i) => {
-                    return (
-                        <div key={"artist_" + i}>
-                            <Title level={3}>{artist.name}</Title>
-                            {
-                                // console.log(artist.images)
-                                <Image src={props.images.url} width={200} />
-                            }
-                        </div>
-                    );
-                })
-            }
-            {/* <p>{props.album}</p>
-            <p>{props.releaseDate}</p> */}
+            <Flex  justify="space-between">            
+                <Image src={props.images.url} alt="album-art" style={imgStyle} />
+                <Flex
+                    vertical
+                    align="flex-end"
+                    justify="space-between"
+                    style={{
+                        padding: 32
+                    }}
+                >            
+                    {
+                        props.artists.map((artist, i) => {
+                            return (
+                                <Title key={"artist_" + i} level={4}>{artist.name}</Title>
+                            );
+                        })
+                    }
+                    <Button type="primary" href={props.href} target="_blank">
+                        Play on Spotify
+                    </Button>
+                    <audio controls>
+                        <source src={props.preview_url} type="audio/mpeg" />
+                    </audio>
+                </Flex>
+                
+            </Flex>
+
+
         </Card>
     );
 }

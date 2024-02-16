@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, Image } from "antd";
+import { Button, Form, Input, Select, Image, Flex } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import reqAccessToken from "../utilities/Auth";
 import SongItem from "./SongItem";
@@ -143,17 +143,15 @@ const Search = () => {
                 <Button type="primary" block htmlType="submit" shape="default"icon={<SearchOutlined />}>Search</Button>
             </Form.Item>
         </Form>
+        <Flex gap="middle" wrap="wrap">
         { 
-                tracks.map((track, i) => {
-                    return (
-                    <>
-                        <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]}/>
-                        {/* <p>{track.name}</p> */}
-                    </>
-                    );
-                })
-                        
+            tracks.map((track, i) => {
+                return (
+                    <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]} href={track.external_urls.spotify} preview_url={track.preview_url} />
+                );
+            })
         }
+        </Flex>
         </>
     );
 }
