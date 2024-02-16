@@ -17,7 +17,7 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="search" element={<Search />} />
       </Routes>
-      <Footer style={{position: "absolute", bottom: 0, width:"100%" }}>Footer</Footer>
+      {/* <Footer style={{position: "absolute", bottom: 0, width:"100%" }}>Footer</Footer> */}
     </BrowserRouter>
   );
 }
