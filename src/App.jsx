@@ -5,6 +5,7 @@ import About from './pages/About';
 import { Layout, Anchor } from 'antd';
 import NavBar from './NavBar';
 import Search from './pages/Search';
+import Profile from './pages/Profile';
 
 const { Header, Content, Footer, Side } = Layout;
 
@@ -13,9 +14,10 @@ function App() {
     <BrowserRouter>
       <NavBar />
       <Routes>
-        <Route index element={<Search />} />
+        <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="search" element={<Search />} />
+        <Route path="profile" element={<Profile />} />
       </Routes>
       <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>
     </BrowserRouter>

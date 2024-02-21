@@ -15,6 +15,10 @@ const menuItems = [
     {
         label: <Link to="search">Search for Song</Link>,
         key: "search"
+    },
+    {
+        label: <Link to="profile">Profile</Link>,
+        key: "profile"
     }
 ];
 

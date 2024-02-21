@@ -27,29 +27,6 @@ const Search = () => {
             });
     }, []); // only on first render
 
-    // test code 
-    // async function handleSubmit(event) {
-    //     console.log(searchName + ", " + searchType)
-
-    //     if (accessToken.length === 0) {
-    //         console.log("Get access token!!!!!!")
-    //         return;
-    //     }
-
-    //     const url = "https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb";
-    //     const headers = {
-    //         "Authorization": "Bearer " + accessToken
-    //     };
-
-    //     const response = await fetch(url, {
-    //         headers
-    //     });
-
-    //     const actual_data = response.json();
-
-    //     console.log(actual_data);
-    // }
-
     async function handleSubmit(event) {
         console.log(searchName + ", " + searchType)
 
