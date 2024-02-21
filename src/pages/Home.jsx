@@ -2,7 +2,7 @@ import React from "react";
 
 const Home = () => {
     return (
-        <React.Fragment className="home">
+        <React.Fragment>
             <h1>Spoti-Fi</h1>
             <ul>
                 <li>Search for a song</li>

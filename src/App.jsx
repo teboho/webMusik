@@ -18,6 +18,7 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="search" element={<Search />} />
         <Route path="profile" element={<Profile />} />
+        {/* <Route path="callback" element{} */}
       </Routes>
       <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>
     </BrowserRouter>

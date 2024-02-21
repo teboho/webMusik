@@ -1,16 +1,36 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
+const clientId = process.env.REACT_APP_CLIENT_ID;
+let code = undefined;
+
 export default function Profile(props) {
     console.log("Starting");
     const [state, setState] = useState({});
 
-    useEffect(() => {
-        console.log(state);
-    }, [state])
+    useEffect(() => {    
+        /**
+         * We understand that the callback activity from spotify will bring a code query parameter...
+         * and so we want to read that so we can start working with it for actual calls
+         */
+        const queryString = new URLSearchParams(window.location.search);
+        const theCode = queryString.get('code');
 
-    const clientId = process.env.REACT_APP_CLIENT_ID;
-    const code = undefined;
+        if (theCode) {
+            code = theCode;
+        } else {
+            code = undefined;
+        }
+
+        getProfile()
+        .then(data =>{
+            console.log("incoming----------------------");
+            console.log(data);
+            
+            populateUI(data);
+        })
+        .catch(err => console.log(err));
+    }, []);
 
     /**
      * 
@@ -53,10 +73,7 @@ export default function Profile(props) {
         console.log("Calling to auth");
         const verifier = generateCodeVerifier(128);
         const challenge = await generateCodeChallenge(verifier);
-
-        console.log("challenge...", challenge);
-        debugger
-
+        
         // saving the verifier to the local storage
         localStorage.setItem("verifier", verifier);
 
@@ -87,8 +104,10 @@ export default function Profile(props) {
         params.append("client_id", clientId);
         params.append("grant_type", "authorization_code");
         params.append("code", code);
-        params.append("redirect_uri", "https://localhost:3000/profile");
+        params.append("redirect_uri", "http://localhost:3000/profile");
         params.append("code_verifier", verifier);
+
+        console.log(params);
 
         // making the request for the access token :)
         const result = await fetch(
@@ -103,11 +122,6 @@ export default function Profile(props) {
         );
 
         const { access_token } = await result.json();
-        console.log(access_token);
-        setState(prev => ({
-            ...prev, 
-            accessToken: access_token
-        }))
         return access_token;
     }
 
@@ -150,23 +164,28 @@ export default function Profile(props) {
     }
 
     // we check if there isn't an existing code we can use, to prevent a redirect loop...
-    if (!code) {
-        console.log("no code atm -> ", code);
-        redirectToAuthCodeFlow(clientId);
-    } else {
-        console.log("code is here -> ", code);
-        debugger
-        getAccessToken(clientId, code)
-            .then((data) => {
-                console.log("got access", data);
-                debugger
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        // const profile = await fetchProfile(accessToken);
-        // console.log("profile", profile);
-        // populateUI(profile);
+    async function getProfile() {
+        if (!code) {
+            // console.log("no code atm -> ", code);
+            await redirectToAuthCodeFlow(clientId);
+            // return;
+        } else {
+            console.log("code is already here -> ", code);
+            console.log("and the clientId", clientId);
+            console.log("verifier", localStorage.getItem("verifier"));
+            const accessToken = await getAccessToken(clientId, code);
+            
+            if (accessToken)
+            {
+                console.log("got token in the else:", accessToken);
+                const profile = await fetchProfile(accessToken);
+                console.log("profile");
+                console.log(profile);
+                return profile;
+            } else {
+
+            }
+        }
     }
 
     return (
@@ -175,6 +194,7 @@ export default function Profile(props) {
 
             <section id="profile">
                 <h2>Logged in as <span id="displayName"></span></h2>
+                <div id="avatar"></div>
                 <ul>
                     <li>User ID: <span id="id"></span></li>
                     <li>Email: <span id="email"></span></li>
