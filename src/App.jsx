@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import AuthProvider from './providers/authProvider';
 import Callback from './pages/Callback';
 import withAuth from './hocs/withAuth';
+import Playlists from './pages/Playlists';
 
 const { Header, Content, Footer, Side } = Layout;
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="search" element={ <Search /> } />
           <Route path="profile" element={<Profile />} />
           <Route path="callback" element={<Callback />} />
+          <Route path="playlists" element={<Playlists />} />
         </Routes>      
       </AuthProvider>
       <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>

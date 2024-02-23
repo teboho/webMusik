@@ -19,6 +19,10 @@ const menuItems = [
     {
         label: <Link to="profile">Profile</Link>,
         key: "profile"
+    },
+    {
+        label: <Link to="playlists">Playlists</Link>,
+        key: "playlists"
     }
 ];
 
