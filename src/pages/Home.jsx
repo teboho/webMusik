@@ -1,17 +1,22 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../providers/authProvider/contexts";
+import { clientId, getAccessToken, loginWithSpotify } from "./Profile";
 
 const Home = () => {
-    const { code, stateToken } = useContext(AuthContext);
+    const { code } = useContext(AuthContext);
 
-    if (code.length === 0) {
+    console.log(code)
+
+    if (code === undefined) {
         return (
+            <>
             <h1>You need to login...</h1>
+            <button onClick={loginWithSpotify}>Login with Spotify</button>
+            </>
         );
+    } else {
+        // getAccessToken(clientId, code)
     }
-
-    // console.log("log at home");
-    console.log(stateToken);
 
     return (
         <>
@@ -20,6 +25,7 @@ const Home = () => {
                 <li>Search for a song</li>
                 <li>Make a new Playlist</li>
             </ul>
+            <p>{code}</p>
         </>
     )
 }

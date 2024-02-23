@@ -13,21 +13,19 @@ const { Header, Content, Footer, Side } = Layout;
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <NavBar />
+    <BrowserRouter>
+      <NavBar />
+      <AuthProvider>
         <Routes>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="search" element={<Search />} />
           <Route path="profile" element={<Profile />} />
           <Route path="callback" element={<Callback />} />
-          {/* <Route path="callback" element{} */}
-        </Routes>
-        <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>
-      </BrowserRouter>      
-    </AuthProvider>
-
+        </Routes>      
+      </AuthProvider>
+      <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>
+    </BrowserRouter>
   );
 }
 

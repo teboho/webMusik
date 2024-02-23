@@ -15,7 +15,7 @@ export const callbackAddr = "http://localhost:3000/callback";
 async function generateCodeChallenge(codeVerifier) {
     const data = new TextEncoder().encode(codeVerifier);
     const digest = await window.crypto.subtle.digest('SHA-256', data);
-    const chall =  btoa(String.fromCharCode(...new Uint8Array(digest)))
+    const chall =  btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
         .replace(/\+/g, '-')
         .replace(/\//g, '-')
         .replace(/=+$/, '');
@@ -29,18 +29,15 @@ async function generateCodeChallenge(codeVerifier) {
  * @returns a string of length characters
  */
 export function generateCodeVerifier(length) {
-    // let text = '';
-    // let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let text = '';
+    let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    // // make random string made up of length possible characters
-    // for (let i = 0; i < length; i++) {
-    //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-    // }
+    // make random string made up of length possible characters
+    for (let i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
 
-    // return text;
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const values = crypto.getRandomValues(new Uint8Array(length));
-    return values.reduce((acc, x) => acc + possible[x % possible.length], "");
+    return text;
 }
 
 /**
@@ -142,7 +139,7 @@ function populateUI(profile) {
     document.location = `https://accounts.spotify.com/authorize?${params.toString()}`;
 }
 
-function loginWithSpotify() {
+export function loginWithSpotify() {
     // console.log("no code atm -> ", code);
     redirectToAuthCodeFlow(clientId)
     .then(() => {

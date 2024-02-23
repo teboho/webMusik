@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Watermark } from 'antd';
 
 const About = () => {
+    const {} = useReducer()
     return (
         <Watermark content="Search Songs on Spotify">
             <div style={{ height: 800 }} />

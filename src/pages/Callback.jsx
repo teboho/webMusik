@@ -7,36 +7,27 @@ import { clientId, generateCodeVerifier, getAccessToken } from './Profile';
  * and so we want to read that so we can start working with it for actual calls
  */
 export default function Callback() {
-    const { code, setCode, saveToken, token, altSave } = useContext(AuthContext);
+    const { code, changeCode } = useContext(AuthContext);
 
-    const queryString = new URLSearchParams(window.location.search);
-    const theCode = queryString.get('code');
 
     useEffect(() => {
-
         return () => {
-            getAccessToken(clientId, theCode)
-                .then(data => {
-                    console.log("getting access");
-                    console.log(data);
-                    return data;
-                })
-                .then(data => altSave(data));
-            console.log("unmounting and saving to the provider");
-            setCode(theCode);
-            
+            const queryString = new URLSearchParams(window.location.search);
+            const theCode = queryString.get('code');
+
+            changeCode(theCode)
         }
-    }, []);
+    }, [])
+
+    const updatingCode = useMemo(() => {
+        return code;
+    })
 
     // I need to use the code to get the access token and save it to the state
-    if (code) {
-        return (
-            <>
-                <p>Got tokens</p>
-                <p>{token ? token: null}</p>
-            </>
-        );
-    }
-
-    return <h1>{theCode}</h1>;
+    return (
+        <>
+            <h1>Callback</h1>
+            <h1>{code}</h1>
+        </>
+    );
 }

@@ -2,25 +2,36 @@ import { handleAction } from "redux-actions";
 import { AuthActionEnums } from './actions';
 
 /**
- * Updates the code in the state
+ * Updates the entire state
  */
 export const loginReducer = handleAction(
     AuthActionEnums.login,
     (state, action) => ({
         ...state,
-        code: action.payload.code
+        code: action.payload.code,
+        token: action.payload.token
     }),
-    { code: "", }
+    { code: "", token: ""}
 )
-
 /**
- * Updates the token in the state
+ * Updates the code in the state
  */
 export const tokenReducer = handleAction(
-    AuthActionEnums.saveToken,
+    AuthActionEnums.login,
     (state, action) => ({
         ...state,
         token: action.payload.token
     }),
-    { token: "", }
+    { token: ""}
+)
+/**
+ * Updates the code in the state
+ */
+export const codeReducer = handleAction(
+    AuthActionEnums.changeCode,
+    (state, action) => ({
+        ...state,
+        code: action.payload.code
+    }),
+    { code: ""}
 )

@@ -1,5 +1,5 @@
-import React, { createContext, useMemo, useReducer, useState } from 'react';
-import { loginReducer, tokenReducer } from './reducers';
+import React, { createContext, useEffect, useMemo, useReducer, useState } from 'react';
+import { codeReducer, loginReducer, tokenReducer } from './reducers';
 import { AuthContext } from './contexts'
 import { loginAction, saveTokenAction } from './actions';
 /**
@@ -9,42 +9,27 @@ import { loginAction, saveTokenAction } from './actions';
 
 export default function AuthProvider(props) {
     // Making the state with the reducer
-    const [user, dispatch] = useReducer(loginReducer, {code: ""});
-    const [tokenObject, dispatchToken] = useReducer(tokenReducer, {token: ""});
-    const [stateToken, setStateToken] = useState('');
-
-    const code = useMemo(() => {
-        // console.log("Provider state is changing", user.code);
-        return user.code;
-    }, [user]);
-
-    const token = useMemo(() => {
-        // console.log("Provider state is changing", user.code);
-        return tokenObject.token;
-    }, [tokenObject]);
+    const [userCode, setUserCode] = useState({})// useReducer(codeReducer, {code: ""});
+    const [userToken, setUserToken] = useReducer(tokenReducer, {token: ""});
 
     /**
      * allow descendants to change the code
      * @param {*} code new code after login
      */
-    const setCode = (code) => {
-        dispatch(loginAction({
-            code
-        }));
-    };
-    
-    const saveToken = (token) => {
-        dispatchToken(saveTokenAction({
-            token
-        }));
+    const changeCode = (newCode) => {
+        setUserCode({code: newCode});
     };
 
-    function altSave(token) {
-        setStateToken(prev => token);
-    }
+    const value = useMemo(() => {
+        return {
+            code: userCode.code,
+            changeCode
+        }
+    }, [userCode]);
+
 
     return (
-        <AuthContext.Provider value={{code, setCode, saveToken, token: token, stateToken, altSave}}>
+        <AuthContext.Provider value={value}>
             {props.children}
         </AuthContext.Provider>
     );
