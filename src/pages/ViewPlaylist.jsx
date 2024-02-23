@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import withAuth from "../hocs/withAuth"
+import SongItem from "./SongItem";
+import { Flex } from "antd";
 
 function ViewPlaylist() {
     const [tracks, setTracks] = useState([]); //songs
+    const [playlistObj, setPlaylistObj] = useState([]); //songs
     const queryString = new URLSearchParams(window.location.search);
     const id = queryString.get('id');
     const accessToken = localStorage.getItem('acccessToken')
@@ -39,6 +42,7 @@ function ViewPlaylist() {
         })
         .then(data => data.json())
         .then(data => {
+            setPlaylistObj(prev => data)
             console.log(data.tracks.items);
             setTracks(prev => data.tracks.items);
         })
@@ -52,10 +56,12 @@ function ViewPlaylist() {
     })
 
     return (
-        <>
-            <h1>{id}</h1>
-            {stateTracks.map(song => <li>{song.track.name}</li>)}
-        </>
+        <div style={{textAlign: "center"}}>
+            <h1>{playlistObj.name}</h1>
+            <Flex gap="middle" wrap="wrap" style={{alignItems: "center", justifyContent: "center"}}>
+                {stateTracks.map(({track}, i) => <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]} href={track.external_urls.spotify} preview_url={track.preview_url} />)}
+            </Flex>
+        </div>
     )
 }
 

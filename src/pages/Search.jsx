@@ -9,38 +9,8 @@ import { loginWithSpotify } from "./Profile";
 const Search = () => {
     const [searchName, setSearchName] = useState("");
     const [searchType, setSearchType] = useState("track");
-    // const [accessToken, setAccessToken] = useState("");
     const [tracks, setTracks] = useState([]);
-/*
-    useEffect(() => {
-        const client_id = process.env.REACT_APP_CLIENT_ID;
-        const client_secret = process.env.REACT_APP_CLIENT_SECRET;
-        console.log("id:", client_id);
-        console.log("secret:", client_secret);
-        reqAccessToken(client_id, client_secret)
-            .then((response) => response.json())
-            .then((data) => {
-                setAccessToken(data["access_token"]);
-                console.log("Found Access Token");
-                console.log(data)
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, []); // only on first render
 
-    const accessToken = localStorage.getItem("accessToken");
-
-    
-    if (accessToken === undefined || accessToken === null) {
-        return (
-            <>
-                <h1>You need to login...</h1>
-                <button onClick={loginWithSpotify}>Login with Spotify</button>
-            </>
-        );
-    } 
-*/
     const accessToken = localStorage.getItem("accessToken");
 
     async function handleSubmit(event) {
@@ -53,7 +23,6 @@ const Search = () => {
 
         // genre, track, artist
         let query = "q=" + searchName + "&type=" + searchType;
-
 
         const url = encodeURI("https://api.spotify.com/v1/search?" + query);
         const headers = {
@@ -135,7 +104,7 @@ const Search = () => {
                 <Button type="primary" block htmlType="submit" shape="default"icon={<SearchOutlined />}>Search</Button>
             </Form.Item>
         </Form>
-        <Flex gap="middle" wrap="wrap">
+        <Flex gap="middle" wrap="wrap" style={{alignItems: "center", justifyContent: "center"}}>
         { 
             tracks.map((track, i) => {
                 return (
