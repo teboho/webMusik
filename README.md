@@ -13,5 +13,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ---
 
-Github: @teboho/spoti-fi  
+Github: @teboho/boxi-fi  
 &copy; 2024 teboho
