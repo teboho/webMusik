@@ -2,12 +2,13 @@ import React, { createContext, useEffect, useMemo, useReducer, useState } from '
 import { codeReducer, loginReducer, tokenReducer } from './reducers';
 import { AuthContext } from './contexts'
 import { loginAction, saveTokenAction } from './actions';
+import withAuth from '../../hocs/withAuth';
 /**
  * the state of this context will be an object 
  * but it will pass the access key to its descendants should they need it
  */
 
-export default function AuthProvider(props) {
+function AuthProvider(props) {
     // Making the state with the reducer
     const [userCode, setUserCode] = useState({})// useReducer(codeReducer, {code: ""});
     // const [userToken, setUserToken] = useReducer(tokenReducer, {token: ""});
@@ -40,3 +41,5 @@ export default function AuthProvider(props) {
         </AuthContext.Provider>
     );
 }
+
+export default AuthProvider;

@@ -8,6 +8,7 @@ import Search from './pages/Search';
 import Profile from './pages/Profile';
 import AuthProvider from './providers/authProvider';
 import Callback from './pages/Callback';
+import withAuth from './hocs/withAuth';
 
 const { Header, Content, Footer, Side } = Layout;
 
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
-          <Route path="search" element={<Search />} />
+          <Route path="search" element={ <Search /> } />
           <Route path="profile" element={<Profile />} />
           <Route path="callback" element={<Callback />} />
         </Routes>      
