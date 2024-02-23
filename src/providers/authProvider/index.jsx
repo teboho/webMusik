@@ -10,16 +10,22 @@ import { loginAction, saveTokenAction } from './actions';
 export default function AuthProvider(props) {
     // Making the state with the reducer
     const [userCode, setUserCode] = useState({})// useReducer(codeReducer, {code: ""});
-    const [userToken, setUserToken] = useReducer(tokenReducer, {token: ""});
+    // const [userToken, setUserToken] = useReducer(tokenReducer, {token: ""});
 
     /**
      * allow descendants to change the code
      * @param {*} code new code after login
      */
     const changeCode = (newCode) => {
-        setUserCode({code: newCode});
+        setUserCode(prev => {
+            return {
+                ...prev,
+                code: newCode
+            }
+        });
     };
 
+    
     const value = useMemo(() => {
         return {
             code: userCode.code,

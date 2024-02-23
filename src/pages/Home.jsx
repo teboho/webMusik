@@ -2,21 +2,23 @@ import React, { useContext } from "react";
 import { AuthContext } from "../providers/authProvider/contexts";
 import { clientId, getAccessToken, loginWithSpotify } from "./Profile";
 
+function logOut() {
+    localStorage.clear();
+}
+
 const Home = () => {
-    const { code } = useContext(AuthContext);
+    const token = localStorage.getItem("accessToken");
 
-    console.log(code)
-
-    if (code === undefined) {
+    if (token === undefined || token === null) {
         return (
             <>
-            <h1>You need to login...</h1>
-            <button onClick={loginWithSpotify}>Login with Spotify</button>
+                <h1>You need to login...</h1>
+                <button onClick={loginWithSpotify}>Login with Spotify</button>
             </>
         );
-    } else {
-        // getAccessToken(clientId, code)
-    }
+    } 
+
+    console.log(token);
 
     return (
         <>
@@ -25,7 +27,9 @@ const Home = () => {
                 <li>Search for a song</li>
                 <li>Make a new Playlist</li>
             </ul>
-            <p>{code}</p>
+            <p>{token}</p>
+            <button onClick={logOut}>Logout</button>
+
         </>
     )
 }

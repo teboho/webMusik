@@ -46,9 +46,10 @@ export function generateCodeVerifier(length) {
  * @param {*} clientId client id
  * @param {*} code the authorization code from the code challenge :)
  */
-export async function getAccessToken(clientId, code) {
+export async function getAccessToken(clientId, code, verifier) {
     // we use the same verifier we used to generate the code :)
-    const verifier = localStorage.getItem("verifier");
+    // const verifier = localStorage.getItem("verifier");
+    console.log("verifier", verifier);
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);
@@ -102,6 +103,7 @@ function populateUI(profile) {
     if (profile.images[0]) {
         const profileImage = new Image(200, 200);
         profileImage.src = profile.images[0].url;
+        document.getElementById("avatar").innerHTML = '';
         document.getElementById("avatar").appendChild(profileImage);
         document.getElementById("imgUrl").innerText = profile.images[0].url;
     }
@@ -113,17 +115,17 @@ function populateUI(profile) {
     document.getElementById("url").setAttribute("href", profile.href);
 }
 
-
  /**
      * Redirect to Spotify authorization page
      * @param {*} clientId spotify client id
      */
- export async function redirectToAuthCodeFlow(clientId) {
+ export async function redirectToAuthCodeFlow(clientId, verifier) {
     console.log("Calling to auth");
-    const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
+
+    console.log("verifier", verifier);
     
-    // saving the verifier to the local storage
+    // saving the verifier to the session storage
     localStorage.setItem("verifier", verifier);
     
     // setup http query string :)
@@ -140,22 +142,34 @@ function populateUI(profile) {
 }
 
 export function loginWithSpotify() {
-    // console.log("no code atm -> ", code);
-    redirectToAuthCodeFlow(clientId)
+    const verifier = generateCodeVerifier(128);
+    localStorage.setItem("verifier", verifier);
+
+    redirectToAuthCodeFlow(clientId, verifier)
     .then(() => {
         console.log('done authorizing');
     });
 }
 
 export default function Profile(props) {
-    console.log("Starting");
-    const { code, setCode, token } = useContext(AuthContext);
-        
-    if (code.length === 0) {
-        return <button onClick={loginWithSpotify}>Login with Spotify</button>
+    const token = localStorage.getItem("accessToken");
+
+    useEffect(() => {
+        if (token) {
+            fetchProfile(token)
+                .then(profileObject => populateUI(profileObject));
+        }
+    });
+
+    if (token === undefined || token === null) {
+        return (
+            <>
+                <h1>You need to login...</h1>
+                <button onClick={loginWithSpotify}>Login with Spotify</button>
+            </>
+        );
     } 
 
-    console.log("Using this code: ", code)
     console.log("Using this token: ", token)
 
     return (
