@@ -58,6 +58,7 @@ export async function getAccessToken(clientId, code, verifier) {
     params.append("code", code);
     params.append("redirect_uri", callbackAddr);
     params.append("code_verifier", verifier);
+    // params.append("scope", "playlist-read-private");
 
     console.log(params);
 
@@ -81,7 +82,7 @@ export async function getAccessToken(clientId, code, verifier) {
  * Call Web API
  * @param {*} token api access token
  */
-async function fetchProfile(token) {
+export async function fetchProfile(token) {
     const result = await fetch(
         "https://api.spotify.com/v1/me",
         {
@@ -134,7 +135,7 @@ function populateUI(profile) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", callbackAddr);
-    params.append("scope", "user-read-private user-read-email");
+    params.append("scope", "user-read-private user-read-email playlist-read-private");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
