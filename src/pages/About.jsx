@@ -2,11 +2,13 @@ import React, { useReducer, useState } from "react";
 import { Watermark } from 'antd';
 
 const About = () => {
-    const {} = useReducer()
     return (
         <Watermark content="Search Songs on Spotify">
-            <div style={{ height: 800 }} />
-            {/* <p>123</p> */}
+            {/* <div style={{ height: 800 }} /> */}
+            <div style={{ height: "800px"}}>
+                <p>this page is not protected</p>
+                <p>You need to login with your spotify account to use all the other pages</p>
+            </div>
         </Watermark>
     );
 }

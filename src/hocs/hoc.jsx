@@ -22,7 +22,7 @@ const withLogger = (WrappedComponent) => {
             // Log data on component update
             console.log(`Component ${WrappedComponent.name} updated.`);
         });
-
+        
         return <WrappedComponent {...props} />
     }
 

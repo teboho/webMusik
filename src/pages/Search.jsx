@@ -3,13 +3,15 @@ import { Button, Form, Input, Select, Image, Flex } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import reqAccessToken from "../utilities/Auth";
 import SongItem from "./SongItem";
+import withAuth from "../hocs/withAuth";
+import { loginWithSpotify } from "./Profile";
 
 const Search = () => {
     const [searchName, setSearchName] = useState("");
     const [searchType, setSearchType] = useState("track");
-    const [accessToken, setAccessToken] = useState("");
+    // const [accessToken, setAccessToken] = useState("");
     const [tracks, setTracks] = useState([]);
-
+/*
     useEffect(() => {
         const client_id = process.env.REACT_APP_CLIENT_ID;
         const client_secret = process.env.REACT_APP_CLIENT_SECRET;
@@ -26,6 +28,20 @@ const Search = () => {
                 console.error(err);
             });
     }, []); // only on first render
+
+    const accessToken = localStorage.getItem("accessToken");
+
+    
+    if (accessToken === undefined || accessToken === null) {
+        return (
+            <>
+                <h1>You need to login...</h1>
+                <button onClick={loginWithSpotify}>Login with Spotify</button>
+            </>
+        );
+    } 
+*/
+    const accessToken = localStorage.getItem("accessToken");
 
     async function handleSubmit(event) {
         console.log(searchName + ", " + searchType)
@@ -109,8 +125,7 @@ const Search = () => {
                             key: "track",
                             value: "genre",
                             label: "Genre"
-                        },
-                        
+                        },  
                     ]}
                 />
             </Form.Item>
@@ -133,4 +148,4 @@ const Search = () => {
     );
 }
 
-export default Search;
+export default withAuth(Search);

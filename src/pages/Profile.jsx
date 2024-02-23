@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AuthContext } from "../providers/authProvider/contexts";
 import { loginReducer } from "../providers/authProvider/reducers";
 import { loginAction } from "../providers/authProvider/actions";
+import withAuth from "../hocs/withAuth";
 
 export const clientId = process.env.REACT_APP_CLIENT_ID;
 export const callbackAddr = "http://localhost:3000/callback";
@@ -151,26 +152,15 @@ export function loginWithSpotify() {
     });
 }
 
-export default function Profile(props) {
-    const token = localStorage.getItem("accessToken");
+function Profile(props) {
+    const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
-        if (token) {
-            fetchProfile(token)
+        if (accessToken) {
+            fetchProfile(accessToken)
                 .then(profileObject => populateUI(profileObject));
         }
     });
-
-    if (token === undefined || token === null) {
-        return (
-            <>
-                <h1>You need to login...</h1>
-                <button onClick={loginWithSpotify}>Login with Spotify</button>
-            </>
-        );
-    } 
-
-    console.log("Using this token: ", token)
 
     return (
         <>
@@ -186,7 +176,10 @@ export default function Profile(props) {
                     <li>Link: <a id="url" href="#"></a></li>
                     <li>Profile Image: <span id="imgUrl"></span></li>
                 </ul>
+                
             </section>
         </>
     );
 }
+
+export default withAuth(Profile);
