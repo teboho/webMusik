@@ -8,7 +8,6 @@ import Search from './pages/Search';
 import Profile from './pages/Profile';
 import AuthProvider from './providers/authProvider';
 import Callback from './pages/Callback';
-import withAuth from './hocs/withAuth';
 import Playlists from './pages/Playlists';
 import ViewPlaylist from './pages/ViewPlaylist';
 

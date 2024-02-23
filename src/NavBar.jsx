@@ -28,7 +28,13 @@ const menuItems = [
 
 function NavBar() {
     return (
-        <Menu items={menuItems} mode="horizontal" />
+        <Menu items={menuItems} mode="horizontal" style={
+            {
+                fontWeight: "bold",
+                background: "rgb(215,211,210)",
+                background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"
+            }
+        }/>
     );
 }
 

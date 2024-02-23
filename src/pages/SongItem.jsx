@@ -5,7 +5,8 @@ import {Card, Image, Typography, Flex, Button } from "antd";
 const { Title }  = Typography;
 
 const cardStyle = {
-    width: 620
+    width: 620,
+    height: "auto"
 };
 const imgStyle = {
     display: 'block',
@@ -21,7 +22,13 @@ const SongItem = (props) => {
             styles={{
                 body: {
                     padding: 0,
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    background: "rgb(215,211,210)",
+                    background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"
+                }, 
+                header: {
+                    background: "rgb(215,211,210)",
+                    background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"
                 }
             }}
         >
@@ -51,8 +58,6 @@ const SongItem = (props) => {
                 </Flex>
                 
             </Flex>
-
-
         </Card>
     );
 }
