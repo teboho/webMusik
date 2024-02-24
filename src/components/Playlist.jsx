@@ -14,7 +14,7 @@ export default function Playlist({item}) {
             <p>{item.description}</p> */}
             <Meta
                 title={<a href={`ViewPlaylist?id=${item.id}`}>{item.name}</a>}
-                description={<p style={{textWrap: "pretty"}}>{item.description}</p>}
+                description={<p style={{textWrap: "pretty", wordWrap: "break-word"}}>{item.description}</p>}
             />
         </Card>
     );

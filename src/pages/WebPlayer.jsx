@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import withAuth from '../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled } from '@ant-design/icons';
-import { Avatar, Card, Image } from 'antd';
+import { Avatar, Card, Image, Button, Spin } from 'antd';
 
 /**
  * Track shape and default...
@@ -34,7 +34,7 @@ const WebPlayer = (props) => {
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             const player = new window.Spotify.Player({
-                name: "Boxi-Fi Player",
+                name: "webMusik",
                 getOAuthToken: cb => { cb(localStorage.getItem("accessToken")) },
                 volume: 0.5
             });
@@ -174,16 +174,32 @@ const WebPlayer = (props) => {
 
     if (!isActive) {
         return (
-            <>
-                <p>Instance not active. Transfer your playback using your spotify app</p>
-                <button onClick={pullControl} id='btnControl' style={{display: 'none'}}>Control using -Fi</button>
-            </>
+            <div style={{
+                textAlign: "center"
+            }}>
+                <h1><em>web</em>Musik</h1>
+                <p>Getting Permissions from Spotify</p>
+                <div style={{
+                    margin: "20px 0",
+                    padding: "30px 50px",
+                    textAlign: "center",
+                    background: "rgb(115,111,210)",
+                    background: "linear-gradient(90deg, rgba(115,211,210,1) 0%, rgba(122,150,34,1) 35%, rgba(124,64,5,1) 100%)",
+                    borderRadius: 4,
+                    fontSize: 16
+                }}>
+                    <Spin />
+                </div>
+                <p>or You can transfer your playback using your spotify app on your mobile app</p>
+                <Button onClick={pullControl} id='btnControl' style={{display: 'none'}}>Play on{" "}<em>web</em>Musik :)</Button>
+            </div>
         );
     } else {
         return (
-            <>
+            <div style={{textAlign: "center"}}>
+                <h1><em>web</em>Musik</h1>
                 <Card
-                    style={{ width: 300, margin: "5px auto", background: "rgb(215,211,210)",
+                    style={{ width: 360, margin: "5px auto", background: "rgb(215,211,210)",
                         background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)" 
                     }}
                     styles={{
@@ -210,12 +226,11 @@ const WebPlayer = (props) => {
                         avatar={<Avatar src={current_track.album?.images[2].url} />}
                         title={currentTrackName}
                         description={currentArtistName}
-                        
                     />
                 </Card>
                 {/* Progressbar */}
                 {/* Comments */}
-            </>
+            </div>
         );
     }
 }

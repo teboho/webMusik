@@ -198,13 +198,16 @@ function Profile(props) {
     });
 
     return (
-        <>
-            <h1>Your profile data</h1>
+        <div style={{textWrap: "pretty", textAlign: "center"}}>
+            <h1><em>web</em>Musik</h1>
+            <h3>Your profile data</h3>
 
             <section id="profile">
                 <h2>Logged in as <span id="displayName"></span></h2>
                 <div id="avatar"></div>
-                <ul>
+                <ul style={{
+                    listStyleType: "none"
+                }}>
                     <li>User ID: <span id="id"></span></li>
                     <li>Email: <span id="email"></span></li>
                     <li>Spotify URI: <a id="uri" href="#"></a></li>
@@ -213,7 +216,7 @@ function Profile(props) {
                 </ul>
                 
             </section>
-        </>
+        </div>
     );
 }
 

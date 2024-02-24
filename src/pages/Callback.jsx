@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../providers/authProvider/contexts';
 import { clientId, fetchProfile, generateCodeVerifier, getAccessToken, loginWithSpotify } from './Profile';
 import { render } from 'react-dom';
+import { Button } from 'antd';
 
 /**
  * We understand that the callback activity from spotify will bring a code query parameter...
@@ -40,12 +41,12 @@ export default function Callback() {
     // I need to use the code to get the access token and save it to the state
     return (
         <>
-            <h1>webMusik</h1>
+            <h1><em>web</em>Musik</h1>
             {isLoggedIn ? 
-                <p>You're in</p> : 
+                <p>Congrats, you're in! <br />Checkout <a href="/playlists">Playlists</a> to view your last saved playlists</p> : 
                 (<>
                     <p>Something went wrong with your log in attempt. Please try again.</p>
-                    <button onClick={loginWithSpotify}>Login with Spotify</button>
+                    <Button onClick={loginWithSpotify}>Login with Spotify</Button>
                 </>)
             }
             

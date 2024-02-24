@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../providers/authProvider/contexts";
 import { clientId, getAccessToken, loginWithSpotify } from "./Profile";
 import withAuth from "../hocs/withAuth";
+import { Button } from 'antd';
 
 function logOut() {
     localStorage.clear();
@@ -11,15 +12,20 @@ function logOut() {
 const Home = () => {
    
     return (
-        <>
-            <h1>webMusik</h1>
-            <ul>
+        <div style={{textAlign: "center", textWrap: "pretty"}}>
+            <h1><em>web</em>Musik</h1>
+            <ul style={{
+                    listStyleType: "none"
+                }}>
                 <li>Search for a song</li>
-                <li>Make a new Playlist</li>
+                <li>Play a song</li>
+                <li>Queue a song</li>
+                <li>... more coming soon ...</li>
+                {/* <li>Make a new Playlist</li> */}
             </ul>
 
-            <button onClick={logOut}>Logout</button>
-        </>
+            <Button onClick={logOut}>Logout</Button>
+        </div>
     )
 }
 
