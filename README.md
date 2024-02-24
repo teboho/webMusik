@@ -1,4 +1,4 @@
-# webMusik
+# <em>web</em>Musik
 
 ## Info
 
@@ -24,5 +24,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ---
 
-Github: @teboho/webMusik 
-&copy; 2024 teboho
+Github: @teboho/<em>web</em>Musik 
+&copy; 2024 teboho  
