@@ -109,7 +109,7 @@ const Search = () => {
             { 
                 tracks.map((track, i) => {
                     return (
-                        <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]} href={track.external_urls.spotify} preview_url={track.preview_url} />
+                        <SongItem key={"track_" + i} track={track} />
                     );
                 })
             }

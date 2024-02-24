@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../providers/authProvider/contexts';
-import { clientId, fetchProfile, generateCodeVerifier, getAccessToken } from './Profile';
+import { clientId, fetchProfile, generateCodeVerifier, getAccessToken, loginWithSpotify } from './Profile';
 import { render } from 'react-dom';
 
 /**
@@ -21,6 +21,7 @@ export default function Callback() {
         console.log("code", code);
         console.log("verifier", verifier);
         
+        // we want to store the user's accessToken when login
         getAccessToken(clientId, code, verifier)
             .then(({access_token, refresh_token}) => {
                 if (access_token && refresh_token) {
@@ -33,17 +34,21 @@ export default function Callback() {
             })
             .catch(err => {
                 throw new Error(err);
-            });
-
-        
+            });        
     }, [])
 
     // I need to use the code to get the access token and save it to the state
     return (
         <>
-            <h1>Callback</h1>
-            {isLoggedIn ? <p>You're in</p> : null}
-            {/* <h1>{localStorage.getItem("code")}</h1> */}
+            <h1>Boxi-Fi</h1>
+            {isLoggedIn ? 
+                <p>You're in</p> : 
+                (<>
+                    <p>Something went wrong with your log in attempt. Please try again.</p>
+                    <button onClick={loginWithSpotify}>Login with Spotify</button>
+                </>)
+            }
+            
         </>
     );
 }

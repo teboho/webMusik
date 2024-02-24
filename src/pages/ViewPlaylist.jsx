@@ -14,7 +14,7 @@ function ViewPlaylist() {
     const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
 
     useEffect(() => {
-        // get client_cred access token since the user login one refuses to work on this one
+/*      // alternatively get client_cred access token since the user login one refuses to work on this one
         const params = new URLSearchParams();
         params.append("grant_type", "client_credentials");
         params.append("client_id", clientId);
@@ -31,18 +31,19 @@ function ViewPlaylist() {
             }
         )
         .then(resp => resp.json())
-        .then(tokenObj => {     
-            // fetching the playlist data
-            const url = encodeURI(`https://api.spotify.com/v1/playlists/${id}`);
-            const headers = {
-                "Authorization": "Bearer " + tokenObj.access_token
-            };
+        .then(tokenObj => {    
+*/
+        // fetching the playlist data
+        const url = encodeURI(`https://api.spotify.com/v1/playlists/${id}`);
+        const headers = {
+            "Authorization": "Bearer " + localStorage.getItem("accessToken")
+        };
 
-            return fetch(url, { headers })
-        })
+        fetch(url, { headers })
         .then(data => data.json())
         .then(data => {
             setPlaylistObj(prev => data)
+            console.log("the tracks are here");
             console.log(data.tracks.items);
             setTracks(prev => data.tracks.items);
         })
@@ -59,7 +60,7 @@ function ViewPlaylist() {
         <div style={{textAlign: "center"}}>
             <h1>{playlistObj.name}</h1>
             <Flex gap="middle" wrap="wrap" style={{alignItems: "center", justifyContent: "center"}}>
-                {stateTracks.map(({track}, i) => <SongItem key={"track_" + i} name={track.name} artists={track.artists} images={track.album.images[0]} href={track.external_urls.spotify} preview_url={track.preview_url} />)}
+                {stateTracks.map((trackObject, i) => <SongItem key={"track_" + i} track={trackObject.track} />)}
             </Flex>
         </div>
     )
