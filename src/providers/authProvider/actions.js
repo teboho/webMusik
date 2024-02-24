@@ -6,8 +6,6 @@ export const AuthActionEnums = {
     changeCode: "CHANGE_CODE",
 };
 
-
-
 /**
  * Action takes in the code and returns an object that contains the access code
  */

@@ -9,20 +9,6 @@ function logOut() {
 }
 
 const Home = () => {
-    /*
-    const token = localStorage.getItem("accessToken");
-
-    if (token === undefined || token === null) {
-        return (
-            <>
-                <h1>You need to login...</h1>
-                <button onClick={loginWithSpotify}>Login with Spotify</button>
-            </>
-        );
-    } 
-
-    console.log(token);
-    */
    
     return (
         <>
@@ -31,9 +17,8 @@ const Home = () => {
                 <li>Search for a song</li>
                 <li>Make a new Playlist</li>
             </ul>
-            {/* <p>{token}</p> */}
-            <button onClick={logOut}>Logout</button>
 
+            <button onClick={logOut}>Logout</button>
         </>
     )
 }
