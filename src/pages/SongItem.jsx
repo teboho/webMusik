@@ -1,22 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {Card, Image, Typography, Flex, Button } from "antd";
-
-const { Title }  = Typography;
+import { Meta } from "antd/es/list/Item";
+import { CheckCircleTwoTone } from "@ant-design/icons"
 
 const cardStyle = {
-    width: 620,
-    height: "auto"
+    width: 300
 };
-const imgStyle = {
-    display: 'block',
-    width: 273
-}; 
 
 const SongItem = (props) => {
     return (
         <Card
-            title={props.name}
+            title={props.track.name}
             hoverable
             style={cardStyle}
             styles={{
@@ -28,36 +23,30 @@ const SongItem = (props) => {
                 }, 
                 header: {
                     background: "rgb(215,211,210)",
-                    background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"
-                }
+                    background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"                }
             }}
+            cover={ <Image src={props.track.album.images[0].url} alt="album-art"/> }
         >
-            <Flex  justify="space-between">            
-                <Image src={props.images.url} alt="album-art" style={imgStyle} />
-                <Flex
-                    vertical
-                    align="flex-end"
-                    justify="space-between"
-                    style={{
-                        padding: 32
-                    }}
-                >            
-                    {
-                        props.artists.map((artist, i) => {
-                            return (
-                                <Title key={"artist_" + i} level={4}>{artist.name}</Title>
-                            );
-                        })
-                    }
-                    <Button type="primary" href={props.href} target="_blank">
-                        Play on Spotify
-                    </Button>
+            <Meta
+                title=""
+                description={
                     <audio controls>
-                        <source src={props.preview_url} type="audio/mpeg" />
-                    </audio>
-                </Flex>
-                
-            </Flex>
+                        <source src={props.track.preview_url} type="audio/mpeg" />
+                    </audio>}
+            />
+            <p>Artist(s): {" "}
+                {
+                props.track.artists.map((artist, i) => {
+                    return (
+                        <span key={"artist_" + i} >{i > 0 ? ", " : null}{artist.name}</span>
+                    );
+                })
+            }
+            </p>
+            <Button type="primary" href={props.track.href} target="_blank">
+                Play on Spotify
+            </Button>
+            {/* <CheckCircleTwoTone twoToneColor="#52c41a" /> */}
         </Card>
     );
 }

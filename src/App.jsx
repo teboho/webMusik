@@ -10,6 +10,7 @@ import AuthProvider from './providers/authProvider';
 import Callback from './pages/Callback';
 import Playlists from './pages/Playlists';
 import ViewPlaylist from './pages/ViewPlaylist';
+import WebPlayer from './pages/WebPlayer';
 
 const { Header, Content, Footer, Side } = Layout;
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="callback" element={<Callback />} />
           <Route path="playlists" element={<Playlists />} />
           <Route path="ViewPlaylist" element={<ViewPlaylist />} />
+          <Route path="WebPlayer" element={<WebPlayer />} />
         </Routes>      
       </AuthProvider>
       <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}>&copy; 2014 @teboho </Footer>

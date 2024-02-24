@@ -23,6 +23,10 @@ const menuItems = [
     {
         label: <Link to="playlists">Playlists</Link>,
         key: "playlists"
+    },
+    {
+        label: <Link to="WebPlayer">Play</Link>,
+        key: "webplayer"
     }
 ];
 

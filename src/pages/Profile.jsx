@@ -6,7 +6,8 @@ import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
 
 export const clientId = process.env.REACT_APP_CLIENT_ID;
-export const callbackAddr = "http://boxi-fi.web.app/callback";
+export const prod_callbackAddr = "https://boxi-fi.web.app/callback";
+export const callbackAddr = "http://localhost:3000/callback";
 
 /**
  * 
@@ -74,8 +75,41 @@ export async function getAccessToken(clientId, code, verifier) {
         }
     );
 
-    const { access_token } = await result.json();
-    return access_token;
+    const resultJson = await result.json();
+
+    return resultJson;
+}
+
+export async function refreshAccessToken(clientId, code, verifier) {
+    // we use the same verifier we used to generate the code :)
+    // const verifier = localStorage.getItem("verifier");
+    console.log("verifier", verifier);
+
+    const params = new URLSearchParams();
+    params.append("client_id", clientId);
+    params.append("grant_type", "authorization_code");
+    params.append("code", code);
+    params.append("redirect_uri", callbackAddr);
+    params.append("code_verifier", verifier);
+    // params.append("scope", "playlist-read-private");
+
+    console.log(params);
+
+    // making the request for the access token :)
+    const result = await fetch(
+        "https://accounts.spotify.com/api/token", 
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body : params
+        }
+    );
+
+    const resultJson = await result.json();
+
+    return resultJson;
 }
 
 /**
@@ -135,7 +169,7 @@ function populateUI(profile) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", callbackAddr);
-    params.append("scope", "user-read-private user-read-email playlist-read-private user-library-read");
+    params.append("scope", "user-read-private user-read-email playlist-read-private user-library-read app-remote-control streaming");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
