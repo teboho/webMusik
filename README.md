@@ -1,4 +1,4 @@
-# Spotify Lists
+# Boxi-Fi
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -13,5 +13,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ---
 
-Github: @teboho/spoti-fi  
+Github: @teboho/boxi-fi  
 &copy; 2024 teboho
