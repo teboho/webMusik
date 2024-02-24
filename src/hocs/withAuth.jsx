@@ -1,5 +1,6 @@
 import React from 'react';
 import { loginWithSpotify } from '../pages/Profile';
+import { Button } from 'antd';
 
 /**
  * This hoc will protect pages which need the user to be logged in
@@ -14,7 +15,17 @@ const withAuth = (WrappedComponent) => {
             return (
                 <>
                     <h1>You need to login...</h1>
-                    <button onClick={loginWithSpotify}>Login with Spotify</button>
+                    <Button style={{
+                        background: "rgb(215,211,210)",
+                        background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)"
+                    }}
+                    styles={{
+                        ":hover": {
+                            color: "red"
+                        }
+                    }}
+                    def
+                    onClick={loginWithSpotify}>Login with Spotify</Button>
                 </>
             );
         } 
