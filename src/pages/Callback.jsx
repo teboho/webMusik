@@ -40,7 +40,7 @@ export default function Callback() {
     // I need to use the code to get the access token and save it to the state
     return (
         <>
-            <h1>Boxi-Fi</h1>
+            <h1>webMusik</h1>
             {isLoggedIn ? 
                 <p>You're in</p> : 
                 (<>

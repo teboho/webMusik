@@ -44,6 +44,7 @@ const WebPlayer = (props) => {
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID-', device_id);
                 setDeviceId(device_id);
+                document.getElementById('btnControl').style.display = "inline";
             });
 
             player.addListener('not_ready', ({device_id}) => {
@@ -58,6 +59,8 @@ const WebPlayer = (props) => {
 
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused);
+
+                console.log(JSON.stringify(state.track_window.current_track));
 
                 player.getCurrentState().then(state => {
                     (!state) ? setActive(false) : setActive(true);
@@ -76,6 +79,9 @@ const WebPlayer = (props) => {
         return current_track?.name;
     }, [current_track]);
     const currentArtistName = useMemo(() => {
+        return current_track?.artists[0].name;
+    }, [current_track]);
+    const currentArtistImage = useMemo(() => {
         return current_track?.artists[0].name;
     }, [current_track]);
     // const device_id = useMemo(() => deviceId, [deviceId]);
@@ -126,7 +132,7 @@ const WebPlayer = (props) => {
         const headers = {
             Authorization: "Bearer " + localStorage.getItem("accessToken")
         };
-        const url = "https://api.spotify.com/v1/me/player/previous";
+        const url = "https://api.spotify.com/v1/me/player/next";
         fetch(url, {
             headers,
             method: "POST"
@@ -137,8 +143,7 @@ const WebPlayer = (props) => {
         })
     };
     const pullControl = (event) => {
-        alert("Fetching permissions");
-        setTimeout(() => {}, 1000);
+        if (deviceId.length === 0) return;
 
         const headers = {
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -171,21 +176,22 @@ const WebPlayer = (props) => {
         return (
             <>
                 <p>Instance not active. Transfer your playback using your spotify app</p>
-                <button onClick={pullControl}>Control using -Fi</button>
+                <button onClick={pullControl} id='btnControl' style={{display: 'none'}}>Control using -Fi</button>
             </>
         );
     } else {
         return (
             <>
                 <Card
-                    style={{ width: 300, margin: "5px auto" }}
+                    style={{ width: 300, margin: "5px auto", background: "rgb(215,211,210)",
+                        background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)" 
+                    }}
                     styles={{
-                        body: {
-
-                        },
-                        "@media (max-width:480px)": {
-                            background: "#f60"
+                        "actions": {
+                                background: "rgb(215,211,210)",
+                                background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)" 
                         }
+                        
                     }}
                     cover={
                         <Image 
@@ -198,11 +204,13 @@ const WebPlayer = (props) => {
                         playOrPause,
                         <StepForwardFilled key={"next"} onClick={skipToNext} />,
                     ]}
+                    
                 >
                     <Card.Meta 
-                        avatar={<Avatar src={"https://api.dicebear.com/7.x/miniavs/svg?seed=8"} />}
+                        avatar={<Avatar src={current_track.album?.images[2].url} />}
                         title={currentTrackName}
                         description={currentArtistName}
+                        
                     />
                 </Card>
                 {/* Progressbar */}

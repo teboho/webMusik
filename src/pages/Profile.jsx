@@ -6,8 +6,8 @@ import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
 
 export const clientId = process.env.REACT_APP_CLIENT_ID;
-export const prod_callbackAddr = "https://boxi-fi.web.app/callback";
-export const callbackAddr = "http://localhost:3000/callback";
+export const callbackAddr = "https://webMusik.web.app/callback";
+export const _callbackAddr = "http://localhost:3000/callback";
 
 /**
  * 

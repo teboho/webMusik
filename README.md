@@ -1,4 +1,4 @@
-# Boxi-Fi
+# webMusik
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -19,5 +19,5 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ---
 
-Github: @teboho/boxi-fi  
+Github: @teboho/webMusik 
 &copy; 2024 teboho

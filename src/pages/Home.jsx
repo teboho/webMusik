@@ -12,7 +12,7 @@ const Home = () => {
    
     return (
         <>
-            <h1>-Fi</h1>
+            <h1>webMusik</h1>
             <ul>
                 <li>Search for a song</li>
                 <li>Make a new Playlist</li>

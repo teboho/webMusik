@@ -32,7 +32,7 @@ const menuItems = [
 
 function NavBar() {
     return (
-        <Menu items={menuItems} mode="horizontal" style={
+        <Menu items={menuItems} mode="horizontal" title="webMusik" style={
             {
                 fontWeight: "bold",
                 background: "rgb(215,211,210)",

@@ -9,6 +9,19 @@ const cardStyle = {
 };
 
 const SongItem = (props) => {
+    const addToQueue = e => {
+        const url = "https://api.spotify.com/v1/me/player/queue?";
+        const searchParams = new URLSearchParams();
+        searchParams.append("uri", props.track.uri);
+        fetch(url + searchParams.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("accessToken")
+            }
+        }).then(data => console.log(data))
+            .catch(err => console.log(err))
+    }
+
     return (
         <Card
             title={props.track.name}
@@ -43,8 +56,8 @@ const SongItem = (props) => {
                 })
             }
             </p>
-            <Button type="primary" href={props.track.href} target="_blank">
-                Play on Spotify
+            <Button type="primary" onClick={addToQueue} dataUri={props.track.uri}>
+                Add to que
             </Button>
             {/* <CheckCircleTwoTone twoToneColor="#52c41a" /> */}
         </Card>
