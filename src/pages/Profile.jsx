@@ -6,7 +6,8 @@ import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
 
 export const clientId = process.env.REACT_APP_CLIENT_ID;
-export const callbackAddr = "http://boxi-fi.web.app/callback";
+export const prod_callbackAddr = "https://boxi-fi.web.app/callback";
+export const callbackAddr = "http://localhost:3000/callback";
 
 /**
  * 
@@ -74,8 +75,9 @@ export async function getAccessToken(clientId, code, verifier) {
         }
     );
 
-    const { access_token } = await result.json();
-    return access_token;
+    const resultJson = await result.json();
+
+    return resultJson;
 }
 
 /**

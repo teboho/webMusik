@@ -14,7 +14,7 @@ function ViewPlaylist() {
     const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
 
     useEffect(() => {
-        // get client_cred access token
+        // get client_cred access token since the user login one refuses to work on this one
         const params = new URLSearchParams();
         params.append("grant_type", "client_credentials");
         params.append("client_id", clientId);

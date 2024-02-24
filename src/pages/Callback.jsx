@@ -22,10 +22,12 @@ export default function Callback() {
         console.log("verifier", verifier);
         
         getAccessToken(clientId, code, verifier)
-            .then(token => {
-                if (token) {
-                    console.log(token);
-                    localStorage.setItem("accessToken", token);
+            .then(({access_token, refresh_token}) => {
+                if (access_token && refresh_token) {
+                    console.log("access_token", access_token);
+                    console.log("refresh_token", refresh_token);
+                    localStorage.setItem("accessToken", access_token);
+                    localStorage.setItem("refreshToken", refresh_token);
                     setLoggedIn(true);
                 }
             })
