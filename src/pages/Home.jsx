@@ -21,10 +21,16 @@ const Home = () => {
                 <li>Play a song</li>
                 <li>Queue a song</li>
                 <li>... more coming soon ...</li>
-                {/* <li>Make a new Playlist</li> */}
             </ul>
-
-            <Button onClick={logOut}>Logout</Button>
+            <Button onClick={logOut}
+                 style={{
+                    background: "rgb(215,211,210)",
+                    background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)",
+                    fontWeight: "bold"
+                }}
+            >
+                Logout
+            </Button>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../providers/authProvider/contexts';
-import { clientId, fetchProfile, generateCodeVerifier, getAccessToken, loginWithSpotify } from './Profile';
+import { clientId, fetchProfile, generateCodeVerifier, getAccessToken, loginWithSpotify } from '../utilities/Auth';
 import { render } from 'react-dom';
 import { Button } from 'antd';
 
@@ -46,7 +46,15 @@ export default function Callback() {
                 <p>Congrats, you're in! <br />Checkout <a href="/playlists">Playlists</a> to view your last saved playlists</p> : 
                 (<>
                     <p>Something went wrong with your log in attempt. Please try again.</p>
-                    <Button onClick={loginWithSpotify}>Login with Spotify</Button>
+                    <Button onClick={loginWithSpotify}
+                        style={{
+                            background: "rgb(215,211,210)",
+                            background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)",
+                            fontWeight: "bold"
+                        }}
+                    >
+                        Login with Spotify
+                    </Button>
                 </>)
             }
             

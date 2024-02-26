@@ -60,8 +60,6 @@ const WebPlayer = (props) => {
                 setTrack(state.track_window.current_track);
                 setPaused(state.paused);
 
-                console.log(JSON.stringify(state.track_window.current_track));
-
                 player.getCurrentState().then(state => {
                     (!state) ? setActive(false) : setActive(true);
                 })
@@ -84,8 +82,7 @@ const WebPlayer = (props) => {
     const currentArtistImage = useMemo(() => {
         return current_track?.artists[0].name;
     }, [current_track]);
-    // const device_id = useMemo(() => deviceId, [deviceId]);
-
+   
     const pausePlayback = e => {
         const headers = {
             Authorization: "Bearer " + localStorage.getItem("accessToken")
