@@ -11,6 +11,7 @@ import Callback from './pages/Callback';
 import Playlists from './pages/Playlists';
 import ViewPlaylist from './pages/ViewPlaylist';
 import WebPlayer from './pages/WebPlayer';
+import { ErrorBoundary } from 'react-error-boundary'; 
 
 const { Header, Content, Footer, Side } = Layout;
 
@@ -27,7 +28,7 @@ function App() {
           <Route path="callback" element={<Callback />} />
           <Route path="playlists" element={<Playlists />} />
           <Route path="ViewPlaylist" element={<ViewPlaylist />} />
-          <Route path="WebPlayer" element={<WebPlayer />} />
+          <Route path="WebPlayer" element={<ErrorBoundary fallback={<div>Sth is wrong with player</div>}><WebPlayer /></ErrorBoundary>} />
         </Routes>      
       </AuthProvider>
       <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}><em>web</em>Musik | &copy; 2014 @teboho </Footer>

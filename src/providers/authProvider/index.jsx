@@ -26,14 +26,12 @@ function AuthProvider(props) {
         });
     };
 
-    
     const value = useMemo(() => {
         return {
             code: userCode.code,
             changeCode
         }
     }, [userCode]);
-
 
     return (
         <AuthContext.Provider value={value}>

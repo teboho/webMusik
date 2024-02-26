@@ -25,7 +25,7 @@ const menuItems = [
         key: "playlists"
     },
     {
-        label: <Link to="WebPlayer">Play</Link>,
+        label: <a href="WebPlayer" target="_self">Play</a>,
         key: "webplayer"
     }
 ];

@@ -4,13 +4,14 @@ import { AuthContext } from "../providers/authProvider/contexts";
 import { loginReducer } from "../providers/authProvider/reducers";
 import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
+import { refreshAccessToken } from "../utilities/Auth";
 
 /**
  * Call Web API
  * @param {*} token api access token
  */
 export async function fetchProfile(token) {
-    const result = await fetch(
+    const f = fetch(
         "https://api.spotify.com/v1/me",
         {
             method: "GET",
@@ -18,9 +19,18 @@ export async function fetchProfile(token) {
                 Authorization: `Bearer ${token}`
             }
         }
-    );
+    ).then(data => data.json())
+    .then(jsonResp => {
+        const strJson = JSON.stringify(jsonResp);
+        if (strJson.includes("401")) {
+            console.log("Refreshing")
+            return refreshAccessToken();
+        }
 
-    return await result.json();
+        return jsonResp;
+    })
+
+    return f;
 }
 
 /**
@@ -50,7 +60,14 @@ function Profile(props) {
     useEffect(() => {
         if (accessToken) {
             fetchProfile(accessToken)
-                .then(profileObject => populateUI(profileObject));
+                .then(profileObject => {
+                    populateUI(profileObject);
+                    localStorage.setItem("userId", profileObject.id);
+                })
+                .catch(err => {
+                    console.log("There was an error");
+                    console.log(err);
+                });
         }
     });
 

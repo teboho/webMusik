@@ -1,4 +1,6 @@
 export const clientId = process.env.REACT_APP_CLIENT_ID;
+export const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
+export const backend_URL = process.env.REACT_APP_BACKEND_URL;
 export const _callbackAddr = "https://webMusik.web.app/callback";
 export const callbackAddr = "http://localhost:3000/callback";
 
@@ -11,7 +13,8 @@ export const callbackAddr = "http://localhost:3000/callback";
 export async function reqAccessToken(client_id, client_secret) {
     const url = "https://accounts.spotify.com/api/token";
     const headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: localStorage.getItem("code")
     };
 
     const response = await fetch(url, {
@@ -31,11 +34,11 @@ export async function reqAccessToken(client_id, client_secret) {
  */
 async function generateCodeChallenge(codeVerifier) {
     const data = new TextEncoder().encode(codeVerifier);
-    const digest = await window.crypto.subtle.digest('SHA-256', data);
-    const chall =  btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
+    const hashed = await window.crypto.subtle.digest('SHA-256', data);
+    const chall =  btoa(String.fromCharCode(...new Uint8Array(hashed)))
+        .replace(/=/g, '')
         .replace(/\+/g, '-')
-        .replace(/\//g, '-')
-        .replace(/=+$/, '');
+        .replace(/\//g, '_');
     
     return chall;
 }
@@ -45,7 +48,7 @@ async function generateCodeChallenge(codeVerifier) {
  * @param {*} length length of the code verifier
  * @returns a string of length characters
  */
-export function generateCodeVerifier(length) {
+export function genRandomString(length) {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -97,39 +100,38 @@ export async function getAccessToken(clientId, code, verifier) {
 
 /**
  * 
- * @param {*} clientId client id
- * @param {*} code this code is provided by spotify when user logs in
- * @param {*} verifier the verifier generated when user initially asked to login
  * @returns the resulting json from refresh
  */
-export async function refreshAccessToken(clientId, code, verifier) {
+export async function refreshAccessToken() {
     // we use the same verifier we used to generate the code :)
-    // const verifier = localStorage.getItem("verifier");
-    console.log("verifier", verifier);
 
     const params = new URLSearchParams();
+    params.append("grant_type", "refresh_token");
+    params.append("refresh_token", localStorage.getItem("refreshToken"));
     params.append("client_id", clientId);
-    params.append("grant_type", "authorization_code");
-    params.append("code", code);
-    params.append("redirect_uri", callbackAddr);
-    params.append("code_verifier", verifier);
-    // params.append("scope", "playlist-read-private");
 
     console.log(params);
 
-    // making the request for the access token :)
+    const base64Auth = btoa(`${clientId}:${clientSecret}`);
+    console.log(base64Auth)
+
+    // making the request for the new access token and accompanying refresh token :)
     const result = await fetch(
         "https://accounts.spotify.com/api/token", 
         {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization:  "Basic " + base64Auth
             },
             body : params
         }
     );
 
     const resultJson = await result.json();
+    console.log(resultJson);
+    localStorage.setItem("accessToken", resultJson.access_token);
+    localStorage.setItem("refreshToken", resultJson.refresh_token);
 
     return resultJson;
 }
@@ -138,7 +140,7 @@ export async function refreshAccessToken(clientId, code, verifier) {
      * Redirect to Spotify authorization page
      * @param {*} clientId spotify client id
      */
- export async function redirectToAuthCodeFlow(clientId, verifier) {
+ export async function redirectToAuthCodeFlow(verifier) {
     console.log("Calling to auth");
     const challenge = await generateCodeChallenge(verifier);
 
@@ -152,7 +154,7 @@ export async function refreshAccessToken(clientId, code, verifier) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", callbackAddr);
-    params.append("scope", "user-read-private user-read-email playlist-read-private user-library-read app-remote-control streaming");
+    params.append("scope", process.env.REACT_APP_USER_SCOPE);
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -164,10 +166,10 @@ export async function refreshAccessToken(clientId, code, verifier) {
  * the one that does the login procedure
  */
 export function loginWithSpotify() {
-    const verifier = generateCodeVerifier(128);
+    const verifier = genRandomString(64);
     localStorage.setItem("verifier", verifier);
 
-    redirectToAuthCodeFlow(clientId, verifier)
+    redirectToAuthCodeFlow(verifier)
     .then(() => {
         console.log('done authorizing');
     });

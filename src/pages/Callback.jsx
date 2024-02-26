@@ -37,7 +37,9 @@ export default function Callback() {
                 throw new Error(err);
             });        
     }, [])
-
+    setTimeout(() => {
+        document.location = '/profile';
+    }, 1000)
     // I need to use the code to get the access token and save it to the state
     return (
         <>
@@ -56,8 +58,7 @@ export default function Callback() {
                         Login with Spotify
                     </Button>
                 </>)
-            }
-            
+            }   
         </>
     );
 }
