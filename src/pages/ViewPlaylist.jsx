@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import withAuth from "../hocs/withAuth"
 import SongItem from "./SongItem";
-import { Avatar, Divider, Skeleton, Flex, List, Button, message } from "antd";
+import { Avatar, Divider, Skeleton, Flex, List, Button, message, Card } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import  InfiniteScroll from "react-infinite-scroll-component";
 
@@ -23,11 +23,11 @@ const track = {
 function ViewPlaylist() {
     const [loading, setLoading] = useState(false);
     const [tracks, setTracks] = useState([]); //songs
-    const [playlistInfo, setPlaylistInfo] = useState({}); //songs
     const [playlistObj, setPlaylistObj] = useState([]); //songs
     const queryString = new URLSearchParams(window.location.search);
     const id = queryString.get('id');
     const [messageApi, contextHolder] = message.useMessage();
+    const [image, setImage] = useState('');
 
     useEffect(() => {
         if (loading) {
@@ -43,10 +43,12 @@ function ViewPlaylist() {
         fetch(url, { headers })
         .then(data => data.json())
         .then(data => {
-            setPlaylistObj(prev => data)
+            setPlaylistObj(prev => ({...data}))
             console.log("All playlist info");
-            // console.log(data);
-            // setPlaylistInfo(data);
+            console.log(data);
+            if (data.images) {
+                setImage(data.images[0].url);
+            }
             console.log("the tracks are here");
             console.log(data.tracks.items);
             setTracks(prev => data.tracks.items);
@@ -60,6 +62,9 @@ function ViewPlaylist() {
     const memoTracks = useMemo(() => {
         return tracks;
     })
+    const playlistInfo = useMemo(() => {
+        return playlistObj;
+    }, []);
 
     const success = () => {
         messageApi.info('Added to queue');
@@ -96,10 +101,16 @@ function ViewPlaylist() {
 
     return (
         <div style={{textAlign: "center"}}>
-            <div className="playlistHeader">
+            <div className="playlistHeader" style={{
+                backdropFilter: "blur(10px)",
+                background: `url(${image ? image : ''})`,
+                color: "white",
+                minHeight: 200
+            }}>
                 <h1>{playlistObj.name}</h1>
+                <p>{playlistObj.description}</p>
             </div>
-
+            
             {contextHolder}
                         
             <div className="playlistContent" id="scrollableDiv" style={{
