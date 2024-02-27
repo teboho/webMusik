@@ -18,12 +18,52 @@ const track = {
     ]
 }
 
+
 const WebPlayer = (props) => {
     const [isPaused, setPaused] = useState(false);
     const [isActive, setActive] = useState(false);
     const [player, setPlayer] = useState(undefined);
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState('');
+
+    const accessToken = localStorage.getItem("accessToken");
+   
+    useEffect(() => {
+        const url = "https://api.spotify.com/v1/me/player";
+        const playerState = fetch(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then(res => {
+            console.log(res);
+            if (res.status === 204) { // no player
+                return {};
+            } else if (res.status === 200) {
+                return res.json();
+            }
+        }).then(data => {
+            if (data.item === undefined) {
+                
+            } else {
+                console.log(data.item);
+                // we get the song
+                const url = `https://api.spotify.com/v1/tracks/${data.item.id}`;
+                return fetch(url, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }).then(resp => resp.json())
+                .then(data => {
+                    console.log(data)
+                    if (data) {
+                        setTrack(data)
+                    }
+                })
+            }
+        })
+        
+        
+    }, [isActive])
 
     useEffect(() => {
         // We have to dynamically inject the player script from spotify directly into the page
@@ -44,7 +84,10 @@ const WebPlayer = (props) => {
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID-', device_id);
                 setDeviceId(device_id);
-                document.getElementById('btnControl').style.display = "inline";
+                const btnControl = document.getElementById('btnControl');
+                if(btnControl){
+                    btnControl.style.display = "inline";
+                }
             });
 
             player.addListener('not_ready', ({device_id}) => {
@@ -81,6 +124,10 @@ const WebPlayer = (props) => {
     }, [current_track]);
     const currentArtistImage = useMemo(() => {
         return current_track?.artists[0].name;
+    }, [current_track]);
+    
+    const currentTrackArt = useMemo(() => {
+        return current_track?.album.images[0].url;
     }, [current_track]);
    
     const pausePlayback = e => {
@@ -167,7 +214,7 @@ const WebPlayer = (props) => {
             <PlayCircleFilled key={"play"} onClick={resumePlayback} /> 
             : 
             <PauseCircleFilled key={"pause"} onClick={pausePlayback} />;
-    }, [isPaused, player]);
+    }, [isPaused]);
 
     if (!isActive) {
         return (
@@ -180,10 +227,7 @@ const WebPlayer = (props) => {
                     margin: "20px 0",
                     padding: "30px 50px",
                     textAlign: "center",
-                    background: "rgb(115,111,210)",
-                    background: "linear-gradient(90deg, rgba(115,211,210,1) 0%, rgba(122,150,34,1) 35%, rgba(124,64,5,1) 100%)",
-                    borderRadius: 4,
-                    fontSize: 16
+                    borderRadius: 4
                 }}>
                     <Spin />
                 </div>
@@ -196,19 +240,23 @@ const WebPlayer = (props) => {
             <div style={{textAlign: "center"}}>
                 <h1><em>web</em>Musik</h1>
                 <Card
-                    style={{ width: 360, margin: "5px auto", background: "rgb(215,211,210)",
-                        background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)" 
+                    style={{ 
+                        width: 360, margin: "5px auto", 
+                        background: "rgb(255,251,244)",
+                        background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)",
+                        "-webkitbox-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                        "-moz-box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                        "box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)"
                     }}
                     styles={{
                         "actions": {
-                                background: "rgb(215,211,210)",
-                                background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)" 
-                        }
-                        
+                            background: "rgb(255,251,244)",
+                            background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)" 
+                        }                        
                     }}
                     cover={
                         <Image 
-                            src={current_track.album?.images[0].url}
+                            src={currentTrackArt}
                             alt='current playing track cover art'
                         />
                     }
@@ -220,7 +268,7 @@ const WebPlayer = (props) => {
                     
                 >
                     <Card.Meta 
-                        avatar={<Avatar src={current_track.album?.images[2].url} />}
+                        // avatar={<Avatar src={current_track.album?.images[2].url} />}
                         title={currentTrackName}
                         description={currentArtistName}
                     />

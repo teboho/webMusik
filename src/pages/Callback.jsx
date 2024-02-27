@@ -38,7 +38,6 @@ export default function Callback() {
             });        
     }, [])
 
-    // I need to use the code to get the access token and save it to the state
     return (
         <>
             <h1><em>web</em>Musik</h1>
