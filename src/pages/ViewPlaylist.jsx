@@ -23,6 +23,7 @@ const track = {
 function ViewPlaylist() {
     const [loading, setLoading] = useState(false);
     const [tracks, setTracks] = useState([]); //songs
+    const [playlistInfo, setPlaylistInfo] = useState({}); //songs
     const [playlistObj, setPlaylistObj] = useState([]); //songs
     const queryString = new URLSearchParams(window.location.search);
     const id = queryString.get('id');
@@ -43,6 +44,9 @@ function ViewPlaylist() {
         .then(data => data.json())
         .then(data => {
             setPlaylistObj(prev => data)
+            console.log("All playlist info");
+            // console.log(data);
+            // setPlaylistInfo(data);
             console.log("the tracks are here");
             console.log(data.tracks.items);
             setTracks(prev => data.tracks.items);
@@ -117,7 +121,7 @@ function ViewPlaylist() {
                                 title={item.track.name}
                                 description={item.track.artists[0].name}
                             />
-                            <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Que</Button></div>
+                            <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Add to queueu</Button></div>
                         </List.Item>
                     )}
                 />

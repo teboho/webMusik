@@ -4,7 +4,7 @@ import { Meta } from 'antd/es/list/Item';
 export default function Playlist({item}) {
     return (
         <Card
-            style={{maxWidth: 300}}
+            style={{maxWidth: 300, height: 500}}
             cover={<img
                 alt={item.name}
                 src={item.images[0].url}
@@ -14,7 +14,7 @@ export default function Playlist({item}) {
             <p>{item.description}</p> */}
             <Meta
                 title={<a href={`ViewPlaylist?id=${item.id}`}>{item.name}</a>}
-                description={<p style={{textWrap: "pretty", wordWrap: "break-word"}}>{item.description}</p>}
+                description={<p style={{textWrap: "pretty", wordWrap: "break-word", overflowY: 'hidden', }}>{item.description}</p>}
             />
         </Card>
     );

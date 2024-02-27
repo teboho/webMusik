@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import withAuth from '../hocs/withAuth';
-import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled } from '@ant-design/icons';
-import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer } from 'antd';
+import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled , MinusCircleOutlined} from '@ant-design/icons';
+import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
+import  InfiniteScroll from "react-infinite-scroll-component";
 
 /**
  * Track shape and default...
@@ -29,6 +30,7 @@ const WebPlayer = (props) => {
     const [currentComments, setCurrentComments] = useState([]);
     const [open, setOpen] = useState(false);
     const [queue, setQueue] = useState([]);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const accessToken = localStorage.getItem("accessToken");
    
@@ -169,7 +171,13 @@ const WebPlayer = (props) => {
             } else if (res.status === 200) {
                 return res.json();
             }
-        }).catch(err => {
+        }).then(data => {
+            console.log("Your queue");
+            console.log(data);
+            setQueue([]);
+            setQueue(data.queue);
+        })
+        .catch(err => {
             console.log("Could not get the queue :(");
         })
     }, [current_track])
@@ -189,10 +197,17 @@ const WebPlayer = (props) => {
     const currentMemoComments = useMemo(() => {
         return currentComments;
     }, [currentComments]);
+    const currentQueue = useMemo(() => {
+        return queue;
+    }, [queue]);
 
     const handleChange = e => {
         setCommentText(prev => e.target.value);
-    }
+    };
+    
+    const customMessage = (message) => {
+        messageApi.info(message);
+    };
 
     const postComment = e => {
         // date will be saved in the back
@@ -216,11 +231,10 @@ const WebPlayer = (props) => {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            
         }).catch(err => {
             console.log(err);
         })
-    }
+    };
 
     const pausePlayback = e => {
         const headers = {
@@ -259,8 +273,13 @@ const WebPlayer = (props) => {
             headers,
             method: "POST"
         }).then(resp => {
-            console.log(JSON.stringify(resp));
-        }).catch(err => {
+            if (resp.status > 400){
+                customMessage("There is no song to go back to!");
+                console.log(resp);
+            }
+            return resp.json();
+        })
+        .catch(err => {
             console.log(err);
         })
     };
@@ -331,10 +350,35 @@ const WebPlayer = (props) => {
         // document.body.style.background = `url(${currentTrackArt}) cover no-repeat fixed`
         // I need to show the queue on here
         const MyDrawer = props => (<Drawer title="Queue" onClose={() => setOpen(false)} open={open}>
-            {/* queue array */}
+            <div className="playlistContent" id="scrollableDiv" style={{
+                height: 400,
+                width: "300",
+                overflow: "auto",
+                padding: '0 16px',
+                margin: "0 auto",
+                border: '1px solid rgba(140, 140, 140, 0.35)'
+            }}>
+                <InfiniteScroll 
+                    dataLength={currentQueue.length}>
+                <List 
+                    dataSource={currentQueue}
+                    renderItem={track => (
+                        <List.Item key={track.id}>
+                            <List.Item.Meta 
+                                avatar={<Avatar src={track.album.images[0].url} />}
+                                title={track.name}
+                                description={track.artists[0].name}
+                            />
+                            {/* <div><Button icon={<MinusCircleOutlined />} >Dequeue</Button></div> */}
+                        </List.Item>
+                    )}
+                />
+                </InfiniteScroll>
+            </div>
         </Drawer>);
         return (
             <div style={{textAlign: "center"}}>
+                {contextHolder}
                 <h1><em>web</em>Musik</h1>
                 <Card
                     style={{ 
@@ -375,7 +419,6 @@ const WebPlayer = (props) => {
                 <Button onClick={() => setOpen(true)}>Show Queue</Button>
                 <MyDrawer />
                 <Form>
-            
                     <Form.Item label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
                         <Input.TextArea rows={3} placeholder='Comments...?' onChange={handleChange} />
                     </Form.Item>
@@ -387,12 +430,16 @@ const WebPlayer = (props) => {
                     <h2>Comments</h2>
                     <List
                         style={{
-                            borderTop: "1px solid"
+                            borderTop: "1px solid",
+                            width: 400,
+                            margin: "0 auto"
                         }}
                         itemLayout="horizontal"
                         dataSource={currentMemoComments}
                         renderItem={(item, index) => (
-                        <List.Item>
+                        <List.Item
+                            style={{width: 300, margin: '0 auto'}}
+                        >
                             <List.Item.Meta
                             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
                             title={<p>{item.posted} | {item.name}</p>}
