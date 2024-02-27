@@ -1,19 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Select, Image, Flex } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import React, { useEffect, useMemo, useState } from "react";
+import { Button, Form, Input, Select, Image, Flex, List, Avatar, message, Skeleton } from "antd";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import reqAccessToken from "../utilities/Auth";
 import SongItem from "./SongItem";
 import withAuth from "../hocs/withAuth";
-import { loginWithSpotify } from "./Profile";
+import  InfiniteScroll from "react-infinite-scroll-component";
 
 const Search = () => {
+    const [loading, setLoading] = useState(false);
     const [searchName, setSearchName] = useState("");
     const [searchType, setSearchType] = useState("track");
     const [tracks, setTracks] = useState([]);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const accessToken = localStorage.getItem("accessToken");
 
+    const memoTracks = useMemo(() => {
+        return [...tracks];
+    }, [tracks]);
+    
+    const customMessage = (message) => {
+        messageApi.info(message);
+    }
+    
+    const addToQueue = uri => {
+        if (uri === null || uri === undefined) {
+            customMessage("Please try again");
+            return;
+        }
+
+        const url = "https://api.spotify.com/v1/me/player/queue?";
+        const searchParams = new URLSearchParams();
+        searchParams.append("uri", uri);
+        fetch(url + searchParams.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("accessToken")
+            }
+        }).then(resp => {
+            console.log(resp);
+            if (resp.status === 204) {
+                customMessage("Added to queue")
+            }
+        })
+            .catch(err => console.log(err))
+    }
+
     async function handleSubmit(event) {
+        if (loading) {
+            return;
+        }
+        setLoading(true);
         console.log(searchName + ", " + searchType)
 
         if (accessToken.length === 0) {
@@ -29,15 +66,20 @@ const Search = () => {
             "Authorization": "Bearer " + accessToken
         };
 
-        const response = await fetch(url, {
+        fetch(url, {
             headers
+        }).then(res => res.json())
+        .then(data => {
+            console.log(data.tracks.items);
+            setTracks(prev => data.tracks.items);
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 150);
+            setLoading(false);
+        })
+        .catch(err => {
+            console.log("There was an error searching");
         });
-
-        const actual_data = await response.json();
-
-        console.log(actual_data);
-
-        setTracks(actual_data.tracks.items)
     }
 
     function handleChange(e) {
@@ -51,7 +93,9 @@ const Search = () => {
     }
 
     return (
-        <>
+        <>        
+        {contextHolder}
+
         <Form 
             onFinish={handleSubmit}
             className="geekblue-5"
@@ -108,17 +152,40 @@ const Search = () => {
                 <Button type="primary" block htmlType="submit" shape="default"icon={<SearchOutlined />}>Search</Button>
             </Form.Item>
         </Form>
-        <div style={{textAlign: "center"}}>
-        <Flex gap="middle" wrap="wrap" style={{alignItems: "center", justifyContent: "center", marginBottom: 5}}>
-            { 
-                tracks.map((track, i) => {
-                    return (
-                        <SongItem key={"track_" + i} track={track} />
-                    );
-                })
-            }
-            </Flex>
-        </div>
+        <div className="playlistContent" id="scrollableDiv" style={{
+                height: 400,
+                width: "75vw",
+                overflow: "auto",
+                padding: '0 16px',
+                margin: "0 auto",
+                border: '1px solid rgba(140, 140, 140, 0.35)'
+            }}>
+                <InfiniteScroll 
+                    dataLength={memoTracks.length}
+                    loader={
+                        <Skeleton 
+                            paragraph={{
+                                rows: 1
+                            }}
+                        />
+                    }    
+                >
+                    <List 
+                        dataSource={memoTracks}
+                        renderItem={item => (
+                            <List.Item key={item.id}>
+                                <List.Item.Meta 
+                                    avatar={<Avatar src={item.album.images[0].url} />}
+                                    title={item.name}
+                                    description={item.artists[0].name}
+                                />
+                                <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.uri)} data-uri={`${item.id}`}>Que</Button></div>
+                            </List.Item>
+                        )}
+                    />
+                </InfiniteScroll>
+            </div>
+
         </>
     );
 }

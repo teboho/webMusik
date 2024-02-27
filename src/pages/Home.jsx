@@ -14,14 +14,14 @@ const Home = () => {
     return (
         <div style={{textAlign: "center", textWrap: "pretty"}}>
             <h1><em>web</em>Musik</h1>
-            <ul style={{
+            {/* <ul style={{
                     listStyleType: "none"
                 }}>
                 <li>Search for a song</li>
                 <li>Play a song</li>
                 <li>Queue a song</li>
                 <li>... more coming soon ...</li>
-            </ul>
+            </ul> */}
             <Button onClick={logOut}>
                 Logout
             </Button>

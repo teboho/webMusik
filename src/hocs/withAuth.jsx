@@ -24,7 +24,6 @@ const withAuth = (WrappedComponent) => {
                         background: "linear-gradient(90deg, rgba(215,211,210,1) 0%, rgba(222,150,34,1) 35%, rgba(224,64,5,1) 100%)",
                         fontWeight: "bold"
                     }}
-                    def
                     onClick={loginWithSpotify}>Login with Spotify</Button>
                 </div>
             );

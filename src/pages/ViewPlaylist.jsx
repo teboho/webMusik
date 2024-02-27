@@ -1,38 +1,38 @@
 import { useEffect, useMemo, useState } from "react";
 import withAuth from "../hocs/withAuth"
 import SongItem from "./SongItem";
-import { Flex } from "antd";
+import { Avatar, Divider, Skeleton, Flex, List, Button, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import  InfiniteScroll from "react-infinite-scroll-component";
+
+/**
+ * Track shape and default...
+ */
+const track = {
+    name: "",
+    album: {
+        images: [
+            { url: "" }
+        ]
+    },
+    artists: [
+        { name: "" }
+    ]
+}
 
 function ViewPlaylist() {
+    const [loading, setLoading] = useState(false);
     const [tracks, setTracks] = useState([]); //songs
     const [playlistObj, setPlaylistObj] = useState([]); //songs
     const queryString = new URLSearchParams(window.location.search);
     const id = queryString.get('id');
-    const accessToken = localStorage.getItem('acccessToken')
-    
-    const clientId = process.env.REACT_APP_CLIENT_ID;
-    const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
-/*      // alternatively get client_cred access token since the user login one refuses to work on this one
-        const params = new URLSearchParams();
-        params.append("grant_type", "client_credentials");
-        params.append("client_id", clientId);
-        params.append("client_secret", clientSecret);
-
-        fetch(
-            "https://accounts.spotify.com/api/token", 
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body : params
-            }
-        )
-        .then(resp => resp.json())
-        .then(tokenObj => {    
-*/
+        if (loading) {
+            return;
+        }
+        setLoading(true);
         // fetching the playlist data
         const url = encodeURI(`https://api.spotify.com/v1/playlists/${id}`);
         const headers = {
@@ -46,22 +46,83 @@ function ViewPlaylist() {
             console.log("the tracks are here");
             console.log(data.tracks.items);
             setTracks(prev => data.tracks.items);
+            setLoading(false);
         })
         .catch(err => {
             console.log(err);
         })
     }, []);
 
-    const stateTracks = useMemo(() => {
+    const memoTracks = useMemo(() => {
         return tracks;
     })
 
+    const success = () => {
+        messageApi.info('Added to queue');
+    }
+    const fail = () => {
+        messageApi.info('Added to queue');
+    }
+    const customMessage = (message) => {
+        messageApi.info(message);
+    }
+
+    const addToQueue = uri => {
+        console.log(uri);
+        if (uri === null || uri === undefined) {
+            customMessage("Did not add. Please try again later!");
+            return;
+        }
+        const url = "https://api.spotify.com/v1/me/player/queue?";
+        const searchParams = new URLSearchParams();
+        searchParams.append("uri", uri);
+        fetch(url + searchParams.toString(), {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("accessToken")
+            }
+        }).then(resp => {
+            console.log(resp);
+            if (resp.status === 204) {
+                success();
+            }
+        })
+            .catch(err => console.log(err))
+    }
+
     return (
         <div style={{textAlign: "center"}}>
-            <h1>{playlistObj.name}</h1>
-            <Flex gap="middle" wrap="wrap" style={{alignItems: "center", justifyContent: "center"}}>
-                {stateTracks.map((trackObject, i) => <SongItem key={"track_" + i} track={trackObject.track} />)}
-            </Flex>
+            <div className="playlistHeader">
+                <h1>{playlistObj.name}</h1>
+            </div>
+
+            {contextHolder}
+                        
+            <div className="playlistContent" id="scrollableDiv" style={{
+                height: 400,
+                width: "75vw",
+                overflow: "auto",
+                padding: '0 16px',
+                margin: "0 auto",
+                border: '1px solid rgba(140, 140, 140, 0.35)'
+            }}>
+                <InfiniteScroll 
+                    dataLength={memoTracks.length}>
+                <List 
+                    dataSource={memoTracks}
+                    renderItem={item => (
+                        <List.Item key={item.id}>
+                            <List.Item.Meta 
+                                avatar={<Avatar src={item.track.album.images[0].url} />}
+                                title={item.track.name}
+                                description={item.track.artists[0].name}
+                            />
+                            <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Que</Button></div>
+                        </List.Item>
+                    )}
+                />
+                </InfiniteScroll>
+            </div>
         </div>
     )
 }
