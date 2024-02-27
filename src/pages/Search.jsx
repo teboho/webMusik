@@ -58,7 +58,11 @@ const Search = () => {
             name="search"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600, border: "1px solid", padding: "20px", margin: "10px auto", borderRadius: "25px"}}
+            style={{ maxWidth: 600, padding: "20px", margin: "10px auto", borderRadius: "25px",
+                "-webkitbox-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                "-moz-box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                "box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)"
+            }}
             autoComplete="off">
             <Form.Item
                 label="songname"

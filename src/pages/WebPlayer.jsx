@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import withAuth from '../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled } from '@ant-design/icons';
-import { Avatar, Card, Image, Button, Spin, List, Form, Input } from 'antd';
+import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
 
 /**
@@ -19,7 +19,6 @@ const track = {
     ]
 }
 
-
 const WebPlayer = (props) => {
     const [isPaused, setPaused] = useState(false);
     const [isActive, setActive] = useState(false);
@@ -28,6 +27,8 @@ const WebPlayer = (props) => {
     const [deviceId, setDeviceId] = useState('');
     const [commentText, setCommentText] = useState('');
     const [currentComments, setCurrentComments] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [queue, setQueue] = useState([]);
 
     const accessToken = localStorage.getItem("accessToken");
    
@@ -153,7 +154,25 @@ const WebPlayer = (props) => {
                 currComment.name = data.display_name;
             })
         })
-    }, [currentComments])
+    }, [currentComments]);
+
+    useEffect(() => {
+        const url = "https://api.spotify.com/v1/me/player/queue";
+        const playerState = fetch(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then(res => {
+            if (res.status === 204) { // no player
+            console.log(res);
+                return {};
+            } else if (res.status === 200) {
+                return res.json();
+            }
+        }).catch(err => {
+            console.log("Could not get the queue :(");
+        })
+    }, [current_track])
 
     const currentTrackName = useMemo(() => {
         return current_track?.name;
@@ -197,6 +216,7 @@ const WebPlayer = (props) => {
         .then(response => response.json())
         .then(data => {
             console.log(data);
+            
         }).catch(err => {
             console.log(err);
         })
@@ -309,6 +329,10 @@ const WebPlayer = (props) => {
         );
     } else {
         // document.body.style.background = `url(${currentTrackArt}) cover no-repeat fixed`
+        // I need to show the queue on here
+        const MyDrawer = props => (<Drawer title="Queue" onClose={() => setOpen(false)} open={open}>
+            {/* queue array */}
+        </Drawer>);
         return (
             <div style={{textAlign: "center"}}>
                 <h1><em>web</em>Musik</h1>
@@ -348,8 +372,11 @@ const WebPlayer = (props) => {
                 </Card>
                 {/* Progressbar */}
                 {/* Comments */}
+                <Button onClick={() => setOpen(true)}>Show Queue</Button>
+                <MyDrawer />
                 <Form>
-                <Form.Item label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
+            
+                    <Form.Item label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
                         <Input.TextArea rows={3} placeholder='Comments...?' onChange={handleChange} />
                     </Form.Item>
                     <Button type='default' onClick={postComment}>
