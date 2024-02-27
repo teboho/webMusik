@@ -128,7 +128,7 @@ const WebPlayer = (props) => {
             .then(data => {
                 console.log(data);
                 if (data.status > 400) {
-                    setCurrentComments(prev => null);
+                    setCurrentComments(prev => []);
                 } else {
                     setCurrentComments(data);
                 }
@@ -150,6 +150,7 @@ const WebPlayer = (props) => {
             }).then(data => data.json())
             .then((data) => {
                 console.log(data);
+                currComment.name = data.display_name;
             })
         })
     }, [currentComments])
@@ -168,9 +169,8 @@ const WebPlayer = (props) => {
     }, [current_track]);
     const currentMemoComments = useMemo(() => {
         return currentComments;
-    }, [current_track]);
+    }, [currentComments]);
 
-        
     const handleChange = e => {
         setCommentText(prev => e.target.value);
     }
@@ -308,6 +308,7 @@ const WebPlayer = (props) => {
             </div>
         );
     } else {
+        // document.body.style.background = `url(${currentTrackArt}) cover no-repeat fixed`
         return (
             <div style={{textAlign: "center"}}>
                 <h1><em>web</em>Musik</h1>
@@ -355,15 +356,19 @@ const WebPlayer = (props) => {
                         Post comment
                     </Button>
                 </Form>
-                <ErrorBoundary fallback={<p>There's a problem getting the comments</p>}>
+                <ErrorBoundary fallback={<p>There's a problem getting the comments!!</p>}>
+                    <h2>Comments</h2>
                     <List
+                        style={{
+                            borderTop: "1px solid"
+                        }}
                         itemLayout="horizontal"
                         dataSource={currentMemoComments}
                         renderItem={(item, index) => (
                         <List.Item>
                             <List.Item.Meta
                             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                            title={item.posted}
+                            title={<p>{item.posted} | {item.name}</p>}
                             description={item.commentText}
                             />
                         </List.Item>

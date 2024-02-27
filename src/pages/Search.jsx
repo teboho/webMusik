@@ -84,17 +84,17 @@ const Search = () => {
                             value: "track",
                             label: "Song name",
                         },
-                        {
-                            key: "artist",
-                            value: "artist",
-                            label: "Artist name"
-                        },
-                        {
+                        // {
+                        //     key: "artist",
+                        //     value: "artist",
+                        //     label: "Artist name"
+                        // },
+                        // {
                             
-                            key: "track",
-                            value: "genre",
-                            label: "Genre"
-                        },  
+                        //     key: "genre",
+                        //     value: "genre",
+                        //     label: "Genre"
+                        // },  
                     ]}
                 />
             </Form.Item>

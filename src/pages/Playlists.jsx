@@ -44,7 +44,10 @@ function Playlists(props) {
     });
 
     return (
-        <Flex wrap='wrap' gap="small">
+        <Flex wrap='wrap' gap="small" style={{
+            alignItems: "center",
+            justifyContent: "center"
+        }}>
             {playLists}
         </Flex>
     );
