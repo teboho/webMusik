@@ -4,6 +4,7 @@ import { AuthContext } from "../providers/authProvider/contexts";
 import { loginReducer } from "../providers/authProvider/reducers";
 import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
+import { refreshAccessToken } from "../utilities/Auth";
 
 /**
  * Call Web API
@@ -50,7 +51,16 @@ function Profile(props) {
     useEffect(() => {
         if (accessToken) {
             fetchProfile(accessToken)
-                .then(profileObject => populateUI(profileObject));
+                .then(profileObject =>{ 
+                    localStorage.setItem("userId", profileObject.id);    
+                    populateUI(profileObject);
+                })
+                .catch(err => {
+                    console.log("found erro");
+                    refreshAccessToken().then(resp => {
+                        console.log(resp);
+                    })
+                });
         }
     });
 

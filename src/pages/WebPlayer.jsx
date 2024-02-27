@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import withAuth from '../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled } from '@ant-design/icons';
-import { Avatar, Card, Image, Button, Spin } from 'antd';
+import { Avatar, Card, Image, Button, Spin, List, Form, Input } from 'antd';
+import { ErrorBoundary } from 'react-error-boundary';
 
 /**
  * Track shape and default...
@@ -25,6 +26,8 @@ const WebPlayer = (props) => {
     const [player, setPlayer] = useState(undefined);
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState('');
+    const [commentText, setCommentText] = useState('');
+    const [currentComments, setCurrentComments] = useState([]);
 
     const accessToken = localStorage.getItem("accessToken");
    
@@ -116,20 +119,89 @@ const WebPlayer = (props) => {
         };
     }, []);
 
+    useEffect(() => {
+        console.log(current_track);
+        // We will pull the relevant comments of this track from the backend 
+        const url = "http://localhost:5101/api/Comments/GetByTrack/" + current_track?.id; 
+        fetch(url)
+            .then(data => data.json())
+            .then(data => {
+                console.log(data);
+                if (data.status > 400) {
+                    setCurrentComments(prev => null);
+                } else {
+                    setCurrentComments(data);
+                }
+            })
+            .catch(err => console.log(err));
+    }, [current_track]);
+
+    useEffect(() => {
+        if (!currentComments) {
+            return;
+        }
+        // we need to get the profiles
+        currentComments.forEach((currComment, i) => {
+            const url = "https://api.spotify.com/v1/users/" + currComment.userId;
+            fetch(url, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("accessToken")
+                }
+            }).then(data => data.json())
+            .then((data) => {
+                console.log(data);
+            })
+        })
+    }, [currentComments])
+
     const currentTrackName = useMemo(() => {
         return current_track?.name;
+    }, [current_track]);
+    const currentTrackId = useMemo(() => {
+        return current_track?.id;
     }, [current_track]);
     const currentArtistName = useMemo(() => {
         return current_track?.artists[0].name;
     }, [current_track]);
-    const currentArtistImage = useMemo(() => {
-        return current_track?.artists[0].name;
-    }, [current_track]);
-    
     const currentTrackArt = useMemo(() => {
         return current_track?.album.images[0].url;
     }, [current_track]);
-   
+    const currentMemoComments = useMemo(() => {
+        return currentComments;
+    }, [current_track]);
+
+        
+    const handleChange = e => {
+        setCommentText(prev => e.target.value);
+    }
+
+    const postComment = e => {
+        // date will be saved in the back
+        const body = JSON.stringify({
+            trackId: currentTrackId,
+            commentText,
+            userId: `${localStorage.getItem("userId")}`,
+            posted: new Date(Date.now()).toISOString()
+        });
+        console.log(body);
+        
+        const url = "http://localhost:5101/api/Comments/PostComment";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            mode: "cors",
+            body: body
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     const pausePlayback = e => {
         const headers = {
             Authorization: "Bearer " + localStorage.getItem("accessToken")
@@ -231,8 +303,8 @@ const WebPlayer = (props) => {
                 }}>
                     <Spin />
                 </div>
+                <Button onClick={pullControl} id='btnControl' style={{display: 'none'}}>Play on<em> web</em>Musik</Button>
                 <p>or You can transfer your playback using your spotify app on your mobile app</p>
-                <Button onClick={pullControl} id='btnControl' style={{display: 'none'}}>Play on{" "}<em>web</em>Musik :)</Button>
             </div>
         );
     } else {
@@ -275,6 +347,29 @@ const WebPlayer = (props) => {
                 </Card>
                 {/* Progressbar */}
                 {/* Comments */}
+                <Form>
+                <Form.Item label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
+                        <Input.TextArea rows={3} placeholder='Comments...?' onChange={handleChange} />
+                    </Form.Item>
+                    <Button type='default' onClick={postComment}>
+                        Post comment
+                    </Button>
+                </Form>
+                <ErrorBoundary fallback={<p>There's a problem getting the comments</p>}>
+                    <List
+                        itemLayout="horizontal"
+                        dataSource={currentMemoComments}
+                        renderItem={(item, index) => (
+                        <List.Item>
+                            <List.Item.Meta
+                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+                            title={item.posted}
+                            description={item.commentText}
+                            />
+                        </List.Item>
+                        )}
+                    />
+                </ErrorBoundary>
             </div>
         );
     }

@@ -30,7 +30,7 @@ function App() {
           <Route path="WebPlayer" element={<WebPlayer />} />
         </Routes>      
       </AuthProvider>
-      <Footer style={{position: "fixed", bottom: 0, right: 0, opacity: 0.5 }}><em>web</em>Musik | &copy; 2014 @teboho </Footer>
+      <Footer style={{bottom: 0, right: 0, opacity: 0.5 }}><em>web</em>Musik | &copy; 2014 @teboho </Footer>
     </BrowserRouter>
   );
 }
