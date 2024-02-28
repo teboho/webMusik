@@ -17,20 +17,40 @@ const { Header, Content, Footer, Side } = Layout;
 function App() {
   return (
     <BrowserRouter>
-      <NavBar />
-      <AuthProvider>
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="search" element={ <Search /> } />
-          <Route path="profile" element={<Profile />} />
-          <Route path="callback" element={<Callback />} />
-          <Route path="playlists" element={<Playlists />} />
-          <Route path="ViewPlaylist" element={<ViewPlaylist />} />
-          <Route path="WebPlayer" element={<WebPlayer />} />
-        </Routes>      
-      </AuthProvider>
-      {/* <Footer style={{position:"fixed", bottom: 0, opacity: 0.5, marginTop: 50, zIndex: -100 }}><em>web</em>Musik | &copy; 2014 @teboho </Footer> */}
+      <Layout>
+        <AuthProvider>
+          <Header 
+              style={{
+                  width: "100%",
+                  background: "rgb(255,251,244)",
+                  background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)"
+              }} >
+            <NavBar />
+          </Header>
+          <Content
+            style={{
+                background: "rgb(255,251,244)",
+                background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)"
+            }}>
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="search" element={ <Search /> } />
+            <Route path="profile" element={<Profile />} />
+            <Route path="callback" element={<Callback />} />
+            <Route path="playlists" element={<Playlists />} />
+            <Route path="ViewPlaylist" element={<ViewPlaylist />} />
+            <Route path="WebPlayer" element={<WebPlayer />} />
+          </Routes>      
+          </Content>
+          <Footer 
+              style={{
+                  position:"fixed", width: "100vw", bottom: 0, opacity: 0.5, marginTop: 50, zIndex: -100
+              }} >
+            <em>web</em>Musik
+          </Footer>
+        </AuthProvider>
+      </Layout>
     </BrowserRouter>
   );
 }

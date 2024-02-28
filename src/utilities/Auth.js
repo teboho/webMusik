@@ -136,6 +136,26 @@ export async function refreshAccessToken() {
     return resultJson;
 }
 
+
+/**
+ * Call Web API
+ * @param {*} token api access token
+ * @returns the json object containing the profile
+ */
+export async function fetchProfile(token) {
+    const result = await fetch(
+        "https://api.spotify.com/v1/me",
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    return await result.json();
+}
+
  /**
      * Redirect to Spotify authorization page
      * @param {*} clientId spotify client id

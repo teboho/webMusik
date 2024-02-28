@@ -94,6 +94,8 @@ function ViewPlaylist() {
             console.log(resp);
             if (resp.status === 204) {
                 success();
+            } else if (resp.status === 404) {
+                customMessage("You can only add to queue if something is already playing!")
             }
         })
             .catch(err => console.log(err))
@@ -118,7 +120,7 @@ function ViewPlaylist() {
                 width: "75vw",
                 overflow: "auto",
                 padding: '0 16px',
-                margin: "0 auto",
+                margin: "10px auto",
                 border: '1px solid rgba(140, 140, 140, 0.35)'
             }}>
                 <InfiniteScroll 

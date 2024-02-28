@@ -10,6 +10,7 @@ import { Button } from 'antd';
  */
 export default function Callback() {
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const {profileImage, profile, saveProfileImage, saveProfile} = useContext(AuthContext);
     const queryString = new URLSearchParams(window.location.search);
     const theCode = queryString.get('code');
 
@@ -31,12 +32,34 @@ export default function Callback() {
                     localStorage.setItem("accessToken", access_token);
                     localStorage.setItem("refreshToken", refresh_token);
                     setLoggedIn(true);
+                    return access_token;
+                }
+            })
+            .then(accessToken => {
+                if (accessToken) {
+                    console.log("LOOK");
+                    console.log(accessToken);
+
+                    // we need to fetch and store the user profile
+                    fetchProfile(accessToken)
+                        .then(profile => {
+                            console.log("Callback found profile");
+                            console.log(profile);
+                            saveProfile(profile);
+                            saveProfileImage(profile.images ? profile.images[0].url : "");
+                        }).catch(err => {
+                            console.log("Could not get profile in the login callback");
+                        });
                 }
             })
             .catch(err => {
                 throw new Error(err);
-            });        
+            });            
     }, [])
+
+    // if(isLoggedIn) {
+    //     document.location = "/";
+    // }
 
     return (
         <>

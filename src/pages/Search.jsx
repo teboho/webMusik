@@ -38,9 +38,10 @@ const Search = () => {
                 Authorization: "Bearer " + localStorage.getItem("accessToken")
             }
         }).then(resp => {
-            console.log(resp);
             if (resp.status === 204) {
-                customMessage("Added to queue")
+                customMessage("Added to!")
+            } else if (resp.status === 404) {
+                customMessage("You can only add to queue if something is already playing!")
             }
         })
             .catch(err => console.log(err))

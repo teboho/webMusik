@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import withAuth from '../hocs/withAuth';
 import Playlist from '../components/Playlist';
-import { fetchProfile } from './Profile';
 import { Avatar, List, Space, Card, Flex } from 'antd';
+import { fetchProfile } from '../utilities/Auth';
 
 /**
  * this page will show all the user's playlists

@@ -1,37 +1,26 @@
-import { handleAction } from "redux-actions"; 
+import { handleActions } from "redux-actions"; 
 import { AuthActionEnums } from './actions';
 
 /**
- * Updates the entire state
+ * 
  */
-export const loginReducer = handleAction(
-    AuthActionEnums.login,
-    (state, action) => ({
-        ...state,
-        code: action.payload.code,
-        token: action.payload.token
-    }),
-    { code: "", token: ""}
-)
-/**
- * Updates the code in the state
- */
-export const tokenReducer = handleAction(
-    AuthActionEnums.login,
-    (state, action) => ({
-        ...state,
-        token: action.payload.token
-    }),
-    { token: ""}
-)
-/**
- * Updates the code in the state
- */
-export const codeReducer = handleAction(
-    AuthActionEnums.changeCode,
-    (state, action) => ({
-        ...state,
-        code: action.payload.code
-    }),
-    { code: ""}
+export const authReducer = handleActions(
+    {
+        [AuthActionEnums.setToken]: (state, action) => ({
+            ...state,
+            token: action.payload.token
+        }), // this handler will change the value of the token in the state
+        [AuthActionEnums.setProfileImage]: (state, action) => ({
+            ...state,
+            profileImage: action.payload.profileImage
+        }), // this handler will change the value of the profile image url in the state
+        [AuthActionEnums.setProfile]: (state, action) => {
+            return ({
+            ...state,
+            profile: action.payload.profile
+        })}, // this handler will change the value of the profile object in the state
+    },
+    {
+        token: "", profileImage: "", profile: {}
+    } // this is the default state
 )

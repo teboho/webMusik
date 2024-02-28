@@ -4,25 +4,7 @@ import { AuthContext } from "../providers/authProvider/contexts";
 import { loginReducer } from "../providers/authProvider/reducers";
 import { loginAction } from "../providers/authProvider/actions";
 import withAuth from "../hocs/withAuth";
-import { refreshAccessToken } from "../utilities/Auth";
-
-/**
- * Call Web API
- * @param {*} token api access token
- */
-export async function fetchProfile(token) {
-    const result = await fetch(
-        "https://api.spotify.com/v1/me",
-        {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    );
-
-    return await result.json();
-}
+import { fetchProfile, refreshAccessToken } from "../utilities/Auth";
 
 /**
  * Update UI with profile data
