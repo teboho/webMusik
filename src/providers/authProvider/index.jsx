@@ -3,7 +3,7 @@ import { authReducer, } from './reducers';
 import { AuthContext } from './contexts'
 import { setProfileAction, setProfileImageAction, } from './actions';
 import { fetchProfile } from '../../utilities/Auth';
-import { Drawer, Image, Descriptions } from 'antd';
+import { Drawer, Image, Descriptions, Button } from 'antd';
 
 const defaultProfile = {
     "country": "",
@@ -32,13 +32,18 @@ const defaultProfile = {
     "product": "",
     "type": "",
     "uri": ""
-  };
+};
+
+
+export function logOut() {
+    localStorage.clear();
+    document.location.reload();
+}
 
 /**
  * the state of this context will be an object 
  * but it will pass the access key to its descendants should they need it
  */
-
 function AuthProvider(props) {
     // Making the state with the reducer
     const [authState, dispatch] = useReducer(authReducer, {token: "", profileImage: "", profile: defaultProfile});
@@ -110,9 +115,13 @@ function AuthProvider(props) {
         children: authState.profile.href
     });
 
-    const drawer = 
+    const profileDrawer = 
         typeof(accessToken) === "string" ? 
             (<Drawer title={authState.profile.display_name} onClose={onClose} open={open} size='large'>
+                
+                <Button type='primary' style={{background: "rgb(255, 20, 10)"}} onClick={logOut}>
+                    Logout
+                </Button>
                 {authState.profile.images.length > 0 && authState.profile.images[0].url.length > 0 ? 
                 <div style={{margin: "0 auto", textAlign: "center"}}>
                     <Image style={{ width: "200px"}} src={authState.profile.images[1].url} alt="profile picture" /> 
@@ -125,10 +134,16 @@ function AuthProvider(props) {
             </Drawer>) 
         : null;
 
+    const searchResultsDrawer = (
+        <Drawer>
+
+        </Drawer>
+    );
+
     return (
         <AuthContext.Provider value={{authState, saveProfileImage, saveProfile, showDrawer}}>
             {/* context for drawer */}
-            {drawer}
+            {profileDrawer}
             {props.children}
         </AuthContext.Provider>
     );

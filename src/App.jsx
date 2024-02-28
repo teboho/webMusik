@@ -28,20 +28,28 @@ function App() {
             <NavBar />
           </Header>
           <Content
-            style={{
-                background: "rgb(255,251,244)",
-                background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)"
-            }}>
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="search" element={ <Search /> } />
-            <Route path="profile" element={<Profile />} />
-            <Route path="callback" element={<Callback />} />
-            <Route path="playlists" element={<Playlists />} />
-            <Route path="ViewPlaylist" element={<ViewPlaylist />} />
-            <Route path="WebPlayer" element={<WebPlayer />} />
-          </Routes>      
+              style={{
+                  background: "rgb(255,251,244)",
+                  background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)"
+              }}>
+            {localStorage.getItem('accessToken') ? <WebPlayer subComp={true} /> : null}
+            
+            <Content
+              style={{
+                  background: "rgb(255,251,244)",
+                  background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)"
+              }}>
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="search" element={ <Search /> } />
+              <Route path="profile" element={<Profile />} />
+              <Route path="callback" element={<Callback />} />
+              <Route path="playlists" element={<Playlists />} />
+              <Route path="ViewPlaylist" element={<ViewPlaylist />} />
+              <Route path="WebPlayer" element={<WebPlayer />} />
+            </Routes>      
+            </Content>
           </Content>
           <Footer 
               style={{

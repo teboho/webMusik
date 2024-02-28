@@ -9,7 +9,7 @@ import  InfiniteScroll from "react-infinite-scroll-component";
 const Search = () => {
     const [loading, setLoading] = useState(false);
     const [searchName, setSearchName] = useState("");
-    const [searchType, setSearchType] = useState("track");
+    // const [searchType, setSearchType] = useState("track");
     const [tracks, setTracks] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -38,8 +38,8 @@ const Search = () => {
                 Authorization: "Bearer " + localStorage.getItem("accessToken")
             }
         }).then(resp => {
-            if (resp.status === 204) {
-                customMessage("Added to!")
+            if (199 < resp.status < 300) {
+                customMessage("Added to queue!")
             } else if (resp.status === 404) {
                 customMessage("You can only add to queue if something is already playing!")
             }
@@ -52,7 +52,7 @@ const Search = () => {
             return;
         }
         setLoading(true);
-        console.log(searchName + ", " + searchType)
+        console.log(searchName + ", track")
 
         if (accessToken.length === 0) {
             console.log("Get access token!!!!!!")
@@ -60,7 +60,7 @@ const Search = () => {
         }
 
         // genre, track, artist
-        let query = "q=" + searchName + "&type=" + searchType;
+        let query = "q=" + searchName + "&type=track";
 
         const url = encodeURI("https://api.spotify.com/v1/search?" + query);
         const headers = {
@@ -88,72 +88,39 @@ const Search = () => {
         setSearchName(e.target.value);
     }
 
-    function handleSelect(event) {
-        console.log(event);
-        setSearchType(event);
-    }
+    // function handleSelect(event) {
+    //     console.log(event);
+    //     setSearchType(event);
+    // }
 
     return (
         <>        
-        {contextHolder}
+            {contextHolder}
 
-        <Form 
-            onFinish={handleSubmit}
-            className="geekblue-5"
-            name="search"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600, padding: "20px", margin: "10px auto", borderRadius: "25px",
-                "-webkitbox-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
-                "-moz-box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
-                "box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)"
-            }}
-            autoComplete="off">
-            <Form.Item
-                label="songname"
-                name="songname"
-                required="true"
-            >
-                <Input required onChange={handleChange}/>
-            </Form.Item>
-            <Form.Item
-                labelCol={{span: 4}}
-                wrapperCol={{span:16}}
-                label="Search type"
-                name="searchType"
-            >
-                <Select
-                    showSearch
-                    placeholder="Search by ..."
-                    defaultValue={{value: "songname", label: "Song name"}}
-                    onSelect={handleSelect}
-                    options={[
-                        {
-                            key: "track",
-                            value: "track",
-                            label: "Song name",
-                        },
-                        // {
-                        //     key: "artist",
-                        //     value: "artist",
-                        //     label: "Artist name"
-                        // },
-                        // {
-                            
-                        //     key: "genre",
-                        //     value: "genre",
-                        //     label: "Genre"
-                        // },  
-                    ]}
-                />
-            </Form.Item>
-            <Form.Item
-                wrapperCol="20"
-            >
-                <Button type="primary" block htmlType="submit" shape="default"icon={<SearchOutlined />}>Search</Button>
-            </Form.Item>
-        </Form>
-        <div className="playlistContent" id="scrollableDiv" style={{
+            <Form 
+                onFinish={handleSubmit}
+                className=""
+                name="search"
+                style={{ maxWidth: 600, padding: "20px", margin: "10px auto", borderRadius: "25px",
+                    "-webkitbox-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                    "-moz-box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
+                    "box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)"
+                }}
+                autoComplete="off">
+                <Form.Item
+                    label="songname"
+                    name="songname"
+                    required="true"
+                >
+                    <Input required onChange={handleChange}/>
+                </Form.Item>
+                <Form.Item
+                >
+                    <Button type="primary" block htmlType="submit" shape="default"icon={<SearchOutlined />}>Search</Button>
+                </Form.Item>
+            </Form>
+
+            <div className="playlistContent" id="scrollableDiv" style={{
                 height: 400,
                 width: "75vw",
                 overflow: "auto",

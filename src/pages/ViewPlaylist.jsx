@@ -56,15 +56,12 @@ function ViewPlaylist() {
         })
         .catch(err => {
             console.log(err);
-        })
+        });
     }, []);
 
     const memoTracks = useMemo(() => {
-        return tracks;
-    })
-    const playlistInfo = useMemo(() => {
-        return playlistObj;
-    }, []);
+        return [...tracks];
+    }, [tracks]);
 
     const success = () => {
         messageApi.info('Added to queue');
@@ -92,14 +89,43 @@ function ViewPlaylist() {
             }
         }).then(resp => {
             console.log(resp);
-            if (resp.status === 204) {
+            if (200 < resp.status < 300) {
                 success();
             } else if (resp.status === 404) {
                 customMessage("You can only add to queue if something is already playing!")
             }
         })
-            .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }
+
+    const scrollList = (
+        <div className="playlistContent" id="scrollableDiv" style={{
+            height: 400,
+            width: "75vw",
+            overflow: "auto",
+            padding: '0 16px',
+            margin: "10px auto",
+            border: '1px solid rgba(140, 140, 140, 0.35)'
+        }}>
+             <InfiniteScroll 
+                dataLength={tracks.length}>
+                    {/* {console.log(tracks.length)} */}
+                <List 
+                    dataSource={tracks}
+                    renderItem={item => (
+                        <List.Item key={item.id}>
+                            <List.Item.Meta 
+                                avatar={item.track === null ? null : <Avatar src={item.track.album.images[0].url} />}
+                                title={item.track === null ? null : item.track.name}
+                                description={item.track === null ? null : item.track.artists[0].name}
+                            />
+                            <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Add to queue</Button></div>
+                        </List.Item>
+                    )}
+                />
+            </InfiniteScroll>
+        </div>
+    );
 
     return (
         <div style={{textAlign: "center"}}>
@@ -115,31 +141,7 @@ function ViewPlaylist() {
             
             {contextHolder}
                         
-            <div className="playlistContent" id="scrollableDiv" style={{
-                height: 400,
-                width: "75vw",
-                overflow: "auto",
-                padding: '0 16px',
-                margin: "10px auto",
-                border: '1px solid rgba(140, 140, 140, 0.35)'
-            }}>
-                <InfiniteScroll 
-                    dataLength={memoTracks.length}>
-                <List 
-                    dataSource={memoTracks}
-                    renderItem={item => (
-                        <List.Item key={item.id}>
-                            <List.Item.Meta 
-                                avatar={<Avatar src={item.track.album.images[0].url} />}
-                                title={item.track.name}
-                                description={item.track.artists[0].name}
-                            />
-                            <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Add to queueu</Button></div>
-                        </List.Item>
-                    )}
-                />
-                </InfiniteScroll>
-            </div>
+            {scrollList}
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { Image, Card } from 'antd'
 import { Meta } from 'antd/es/list/Item';
+import { Link } from 'react-router-dom';
 
 export default function Playlist({item}) {
     return (
@@ -13,7 +14,7 @@ export default function Playlist({item}) {
             {/* <h1 style={{color: item.primary_color}}>{item.name}</h1>
             <p>{item.description}</p> */}
             <Meta
-                title={<a href={`ViewPlaylist?id=${item.id}`}>{item.name}</a>}
+                title={<Link to={`/ViewPlaylist?id=${item.id}`}>{item.name}</Link>}
                 description={<p style={{textWrap: "pretty", wordWrap: "break-word", overflowY: 'hidden', }}>{item.description}</p>}
             />
         </Card>

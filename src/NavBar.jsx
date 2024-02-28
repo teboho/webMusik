@@ -10,10 +10,10 @@ const menuItems = [
         label: <Link to="/"><em>web</em>Musik</Link>,
         key: "home"
     },
-    {
-        label: <Link to="about">About</Link>,
-        key: "about"
-    },
+    // {
+    //     label: <Link to="about">About</Link>,
+    //     key: "about"
+    // },
     {
         label: <Link to="search">Search for Song</Link>,
         key: "search"
@@ -26,10 +26,10 @@ const menuItems = [
         label: <Link to="playlists">Playlists</Link>,
         key: "playlists"
     },
-    {
-        label: <Link to="WebPlayer">Play</Link>,
-        key: "webplayer"
-    }
+    // {
+    //     label: <Link to="WebPlayer">Play</Link>,
+    //     key: "webplayer"
+    // }
 ];
 
 const offMenuItems = [
@@ -37,10 +37,10 @@ const offMenuItems = [
         label: <Link to="/"><em>web</em>Musik</Link>,
         key: "home"
     },
-    {
-        label: <Link to="about">About</Link>,
-        key: "about"
-    }
+    // {
+    //     label: <Link to="about">About</Link>,
+    //     key: "about"
+    // }
 ];
 
 function NavBar() {
@@ -52,7 +52,6 @@ function NavBar() {
     const token = localStorage.getItem("accessToken");
 
     const accessToken = localStorage.getItem("accessToken");
-    // console.log(authState);
     
     async function onSearch(event) {
         if (loading) {
@@ -112,9 +111,9 @@ function NavBar() {
                 }}            
             />
             
-            <div className="search" style={{display: "inline-block", margin: "10px 0"}}>
+            {/* <div className="search" style={{display: "inline-block", margin: "10px 0"}}>
                 <Search placeholder="input search text" onSearch={onSearch} enterButton allowClear />
-            </div>
+            </div> */}
             <div style={{
                 margin: "10px"
             }}>

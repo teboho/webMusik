@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import withAuth from '../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled , MinusCircleOutlined} from '@ant-design/icons';
-import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton } from 'antd';
+import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton, Modal } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
 import  InfiniteScroll from "react-infinite-scroll-component";
+import { AuthContext } from '../providers/authProvider/contexts';
 
 /**
  * Track shape and default...
@@ -29,10 +30,14 @@ const WebPlayer = (props) => {
     const [commentText, setCommentText] = useState('');
     const [currentComments, setCurrentComments] = useState([]);
     const [open, setOpen] = useState(false);
+    const [openComments, setOpenComments] = useState(false);
+    const [commentModalOpen, setCommentModalOpen] = useState(false);
     const [queue, setQueue] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
 
     const accessToken = localStorage.getItem("accessToken");
+    const {authState} = useContext(AuthContext);
+
    
     useEffect(() => {
         const url = "https://api.spotify.com/v1/me/player";
@@ -122,7 +127,8 @@ const WebPlayer = (props) => {
         };
     }, []);
 
-    useEffect(() => {
+    // getting comments
+    const getComments = () => {
         console.log(current_track);
         // We will pull the relevant comments of this track from the backend 
         const url = "http://localhost:5101/api/Comments/GetByTrack/" + current_track?.id; 
@@ -137,7 +143,8 @@ const WebPlayer = (props) => {
                 }
             })
             .catch(err => console.log(err));
-    }, [current_track]);
+    };
+    useEffect(getComments, [current_track]);
 
     useEffect(() => {
         if (!currentComments) {
@@ -210,11 +217,12 @@ const WebPlayer = (props) => {
     };
 
     const postComment = e => {
+        // we can get the user Id from the context provider...
         // date will be saved in the back
         const body = JSON.stringify({
             trackId: currentTrackId,
             commentText,
-            userId: `${localStorage.getItem("userId")}`,
+            userId: `${authState.profile.id}`,
             posted: new Date(Date.now()).toISOString()
         });
         console.log(body);
@@ -228,12 +236,20 @@ const WebPlayer = (props) => {
             mode: "cors",
             body: body
         })
-        .then(response => response.json())
+        .then(response => {
+            if (199 < response < 300) {
+                // get new comments
+                getComments();
+                customMessage("Posted your comment");
+                setCommentText('');
+            }
+            response.json()
+        })
         .then(data => {
             console.log(data);
         }).catch(err => {
             console.log(err);
-        })
+        });
     };
 
     const pausePlayback = e => {
@@ -349,7 +365,7 @@ const WebPlayer = (props) => {
     } else {
         // document.body.style.background = `url(${currentTrackArt}) cover no-repeat fixed`
         // I need to show the queue on here
-        const MyDrawer = props => (<Drawer title="Queue" onClose={() => setOpen(false)} open={open}>
+        const QueueDrawer = props => (<Drawer title="Queue" onClose={() => setOpen(false)} open={open}>
             <div className="playlistContent" id="scrollableDiv" style={{
                 height: 400,
                 width: "300",
@@ -365,7 +381,7 @@ const WebPlayer = (props) => {
                     renderItem={track => (
                         <List.Item key={track.id}>
                             <List.Item.Meta 
-                                avatar={<Avatar src={track.album.images[0].url} />}
+                                avatar={<Avatar src={track.album.images[1].url} />}
                                 title={track.name}
                                 description={track.artists[0].name}
                             />
@@ -376,10 +392,38 @@ const WebPlayer = (props) => {
                 </InfiniteScroll>
             </div>
         </Drawer>);
+        const CommentsDrawer = props => (
+            <Drawer title="Comments" placement='bottom' keyboard onClose={() => setOpenComments(false)} open={openComments}>
+                <ErrorBoundary fallback={<p>There's a problem getting the comments!!</p>}>
+                    <h2>Comments</h2>
+                    <List
+                        style={{
+                            borderTop: "1px solid",
+                            width: 400,
+                            margin: "0 auto"
+                        }}
+                        itemLayout="horizontal"
+                        dataSource={currentMemoComments}
+                        renderItem={(item, index) => (
+                        <List.Item
+                            style={{width: 300, margin: '0 auto'}}
+                        >
+                            <List.Item.Meta
+                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+                            title={<p>{item.posted} | {item.name}</p>}
+                            description={item.commentText}
+                            />
+                        </List.Item>
+                        )}
+                    />
+                </ErrorBoundary>
+            </Drawer>
+        );
+
         return (
             <div style={{textAlign: "center"}}>
                 {contextHolder}
-                <h1><em>web</em>Musik</h1>
+                {/* <h1><em>web</em>Musik</h1> */}
                 <Card
                     style={{ 
                         width: 360, margin: "5px auto", 
@@ -417,38 +461,17 @@ const WebPlayer = (props) => {
                 {/* Progressbar */}
                 {/* Comments */}
                 <Button onClick={() => setOpen(true)}>Show Queue</Button>
-                <MyDrawer />
-                <Form>
-                    <Form.Item label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
-                        <Input.TextArea rows={3} placeholder='Comments...?' onChange={handleChange} />
+                <Button onClick={() => setOpenComments(true)}>Show Comments</Button>
+                <Form autoFocus={true}>
+                    <Form.Item id='inputComment' label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
+                        <Input.TextArea rows={3} placeholder='Comments...?' value={commentText} onChange={handleChange} />
                     </Form.Item>
                     <Button type='default' onClick={postComment}>
                         Post comment
                     </Button>
                 </Form>
-                <ErrorBoundary fallback={<p>There's a problem getting the comments!!</p>}>
-                    <h2>Comments</h2>
-                    <List
-                        style={{
-                            borderTop: "1px solid",
-                            width: 400,
-                            margin: "0 auto"
-                        }}
-                        itemLayout="horizontal"
-                        dataSource={currentMemoComments}
-                        renderItem={(item, index) => (
-                        <List.Item
-                            style={{width: 300, margin: '0 auto'}}
-                        >
-                            <List.Item.Meta
-                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                            title={<p>{item.posted} | {item.name}</p>}
-                            description={item.commentText}
-                            />
-                        </List.Item>
-                        )}
-                    />
-                </ErrorBoundary>
+                <QueueDrawer />
+                <CommentsDrawer />
             </div>
         );
     }
