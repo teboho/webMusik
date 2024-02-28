@@ -44,7 +44,7 @@ const Search = () => {
                 customMessage("You can only add to queue if something is already playing!")
             }
         })
-            .catch(err => console.log(err))
+        .catch(err => console.log(err))
     }
 
     async function handleSubmit(event) {

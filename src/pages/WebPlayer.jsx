@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import withAuth from '../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled , MinusCircleOutlined} from '@ant-design/icons';
-import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton, Modal } from 'antd';
+import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton, Slider } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
 import  InfiniteScroll from "react-infinite-scroll-component";
 import { AuthContext } from '../providers/authProvider/contexts';
@@ -34,10 +34,10 @@ const WebPlayer = (props) => {
     const [commentModalOpen, setCommentModalOpen] = useState(false);
     const [queue, setQueue] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
-
-    const accessToken = localStorage.getItem("accessToken");
+    const [volume, setVolume] = useState(30);
     const {authState} = useContext(AuthContext);
 
+    const accessToken = localStorage.getItem("accessToken");
    
     useEffect(() => {
         const url = "https://api.spotify.com/v1/me/player";
@@ -343,6 +343,34 @@ const WebPlayer = (props) => {
             <PauseCircleFilled key={"pause"} onClick={pausePlayback} />;
     }, [isPaused]);
 
+    const volumeChange = vol => {
+        console.log("Volume change complete");
+        console.log(vol);
+        setVolume(prev => vol);
+    }
+    const volumeChangeComplete = vol => {
+        console.log("Volume change complete");
+        console.log(vol);
+        setVolume(prev => vol);
+
+        // change spotify volume
+        const url = "https://api.spotify.com/v1/me/player/volume?";
+        const searchParams = new URLSearchParams();
+        searchParams.append("volume_percent", 50)
+        fetch(url + searchParams.toString(), {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then(resp => {
+            if (199 < resp.status < 300) {
+                customMessage("Volume changed")
+            } else if (resp.status > 400) {
+                customMessage("Try later")
+            }
+        });
+    }
+
     if (!isActive) {
         return (
             <div style={{
@@ -424,6 +452,7 @@ const WebPlayer = (props) => {
             <div style={{textAlign: "center"}}>
                 {contextHolder}
                 {/* <h1><em>web</em>Musik</h1> */}
+                
                 <Card
                     style={{ 
                         width: 360, margin: "5px auto", 
@@ -458,6 +487,15 @@ const WebPlayer = (props) => {
                         description={currentArtistName}
                     />
                 </Card>
+                <div className='volumeSlider' style={{position: "absolute", top: 50, float: "left", height: 300}}>
+                    <Slider vertical={true}
+                        min={0}
+                        max={100}
+                        defaultValue={30}
+                        onChange={volumeChange}
+                        onChangeComplete={volumeChangeComplete}
+                    />
+                </div>
                 {/* Progressbar */}
                 {/* Comments */}
                 <Button onClick={() => setOpen(true)}>Show Queue</Button>
