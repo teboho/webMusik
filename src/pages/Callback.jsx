@@ -57,9 +57,11 @@ export default function Callback() {
             });            
     }, [])
 
-    // if(isLoggedIn) {
-    //     document.location = "/";
-    // }
+    if(isLoggedIn) {
+        setTimeout(() => {
+            document.location = "/";
+        }, 250);
+    }
 
     return (
         <>

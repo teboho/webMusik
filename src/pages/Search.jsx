@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Form, Input, Select, Image, Flex, List, Avatar, message, Skeleton } from "antd";
-import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { SearchOutlined, PlusOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import reqAccessToken from "../utilities/Auth";
 import SongItem from "./SongItem";
 import withAuth from "../hocs/withAuth";
@@ -93,6 +93,29 @@ const Search = () => {
     //     setSearchType(event);
     // }
 
+    /**
+     * 
+     * @param {*} uri specific song uri
+     */
+    const play = uri => {
+        const url = "https://api.spotify.com/v1/me/player/play";
+        // const searchParams = new URLSearchParams();
+        // searchParams.append("device_id", device_id);
+        const headers = {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "Content-Type": "application/json"
+        };
+        fetch(url, {
+            headers,
+            method: "PUT",
+            body: JSON.stringify({
+                uris: [uri]
+            })
+        }).then(() => {
+            customMessage("Playing your song");
+        }).catch(err => console.log("Could not play new testament"));
+    }
+
     return (
         <>        
             {contextHolder}
@@ -147,7 +170,8 @@ const Search = () => {
                                     title={item.name}
                                     description={item.artists[0].name}
                                 />
-                                <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.uri)} data-uri={`${item.id}`}>Que</Button></div>
+                                <div><Button icon={<PlayCircleOutlined />} onClick={() => play(item.uri)} data-uri={`${item.id}`}>Play now</Button></div>
+                                <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.uri)} data-uri={`${item.id}`}>Add to Que</Button></div>
                             </List.Item>
                         )}
                     />

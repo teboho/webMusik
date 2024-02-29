@@ -41,6 +41,92 @@ const WebPlayer = (props) => {
     const accessToken = localStorage.getItem("accessToken");
    
     useEffect(() => {
+        // We have to dynamically inject the player script from spotify directly into the page
+        const script = document.createElement("script");
+        script.src = "https://sdk.scdn.co/spotify-player.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const player = new window.Spotify.Player({
+                name: "webMusik",
+                getOAuthToken: cb => { cb(localStorage.getItem("accessToken")) },
+                volume: 0.5
+            });
+
+            setPlayer(player);
+
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID-', device_id);
+                setDeviceId(device_id);
+                // const btnControl = document.getElementById('btnControl');
+                // if(btnControl){
+                //     btnControl.style.display = "inline";
+                //     // setActive(true);
+                // }
+                
+                // this pirce of code will load the player onto the page instead of relying on the button click like before
+                const headers = {
+                    Authorization: "Bearer " + localStorage.getItem("accessToken"),
+                    "Content-Type": "application/json"
+                };
+                const url = "https://api.spotify.com/v1/me/player";
+                fetch(url, {
+                    headers,
+                    method: "PUT",
+                    body: JSON.stringify({
+                        "device_ids": [device_id],
+                        play: false
+                    })
+                }).then(resp => {
+                    if (resp.status === 204) {
+                        // Starting with a default album to play
+                        const searchParams = new URLSearchParams();
+                        searchParams.append("device_id", device_id);
+                        fetch(url + "/play?" + searchParams.toString(), {
+                            headers,
+                            method: "PUT",
+                            body: JSON.stringify({
+                                context_uri: "spotify:album:6Jp5anRdBdocRLr1h7fmig"
+                            })
+                        }).then(() => {
+                            console.log("Playing new testament");
+                        }).catch(err => console.log("Could not play new testament"));
+                    }
+                    console.log(resp.status);
+                    console.log(JSON.stringify(resp));
+                }).catch(err => {
+                    console.log(err);
+                });
+            });
+
+            player.addListener('not_ready', ({device_id}) => {
+                console.log('Device ID has gone offline', device_id);
+                // we need to remove the device ...
+            });
+
+            player.addListener('player_state_changed', (state => {
+                if (!state) {
+                    return;
+                }
+
+                setTrack(state.track_window.current_track);
+                setPaused(state.paused);
+
+                player.getCurrentState().then(state => {
+                    (!state) ? setActive(false) : setActive(true);
+                })
+            }));
+
+            player.connect().then(success => {
+                if(success) {
+                    console.log("Successfuly connected to spotify")
+                }
+            });
+        };
+    }, []);
+
+    useEffect(() => {
         const url = "https://api.spotify.com/v1/me/player";
         const playerState = fetch(url, {
             headers: {
@@ -76,76 +162,6 @@ const WebPlayer = (props) => {
         
         
     }, [isActive])
-
-    useEffect(() => {
-        // We have to dynamically inject the player script from spotify directly into the page
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
-        document.body.appendChild(script);
-
-        window.onSpotifyWebPlaybackSDKReady = () => {
-            const player = new window.Spotify.Player({
-                name: "webMusik",
-                getOAuthToken: cb => { cb(localStorage.getItem("accessToken")) },
-                volume: 0.5
-            });
-
-            setPlayer(player);
-
-            player.addListener('ready', ({ device_id }) => {
-                console.log('Ready with Device ID-', device_id);
-                setDeviceId(device_id);
-                const btnControl = document.getElementById('btnControl');
-                if(btnControl){
-                    btnControl.style.display = "inline";
-                }
-                
-                // this pirce of code will load the player onto the page instead of relying on the button click like before
-            //     const headers = {
-            //         Authorization: "Bearer " + localStorage.getItem("accessToken"),
-            //         "Content-Type": "application/json"
-            //     };
-            //     const url = "https://api.spotify.com/v1/me/player";
-            //     fetch(url, {
-            //         headers,
-            //         method: "PUT",
-            //         body: JSON.stringify({
-            //             "device_ids": [device_id],
-            //             play: true
-            //         })
-            //     }).then(resp => {
-            //         console.log(JSON.stringify(resp));
-            //     }).catch(err => {
-            //         console.log(err);
-            //     });
-            });
-
-            player.addListener('not_ready', ({device_id}) => {
-                console.log('Device ID has gone offline', device_id);
-                // we need to remove the device ...
-            });
-
-            player.addListener('player_state_changed', (state => {
-                if (!state) {
-                    return;
-                }
-
-                setTrack(state.track_window.current_track);
-                setPaused(state.paused);
-
-                player.getCurrentState().then(state => {
-                    (!state) ? setActive(false) : setActive(true);
-                })
-            }));
-
-            player.connect().then(success => {
-                if(success) {
-                    console.log("Successfuly connected to spotify")
-                }
-            });
-        };
-    }, []);
 
     // getting comments
     const getComments = () => {
@@ -213,7 +229,7 @@ const WebPlayer = (props) => {
         return current_track?.name;
     }, [current_track]);
     const currentTrackId = useMemo(() => {
-        return current_track?.id;
+        return current_track.id;
     }, [current_track]);
     const currentArtistName = useMemo(() => {
         return current_track?.artists[0].name;
@@ -344,15 +360,20 @@ const WebPlayer = (props) => {
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
             "Content-Type": "application/json"
         };
-        const url = "https://api.spotify.com/v1/me/player";
+        const url = "https://api.spotify.com/v1/me/player/";
         fetch(url, {
             headers,
             method: "PUT",
             body: JSON.stringify({
                 "device_ids": [deviceId],
-                play: true
+                play: false,
+                "uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh"]
             })
         }).then(resp => {
+            if (resp.status === 204) {
+                console.log("Player registered");
+                console.log(deviceId);
+            }
             console.log(JSON.stringify(resp));
         }).catch(err => {
             console.log(err);

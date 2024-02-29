@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import withAuth from "../hocs/withAuth"
 import SongItem from "./SongItem";
 import { Avatar, Divider, Skeleton, Flex, List, Button, message, Card } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import  InfiniteScroll from "react-infinite-scroll-component";
 
 /**
@@ -98,6 +98,30 @@ function ViewPlaylist() {
         .catch(err => console.log(err))
     }
 
+    
+    /**
+     * 
+     * @param {*} uri specific song uri
+     */
+    const play = uri => {
+        const url = "https://api.spotify.com/v1/me/player/play";
+        // const searchParams = new URLSearchParams();
+        // searchParams.append("device_id", device_id);
+        const headers = {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "Content-Type": "application/json"
+        };
+        fetch(url, {
+            headers,
+            method: "PUT",
+            body: JSON.stringify({
+                uris: [uri]
+            })
+        }).then(() => {
+            customMessage("Playing your song");
+        }).catch(err => console.log("Could not play new testament"));
+    }
+
     const scrollList = (
         <div className="playlistContent" id="scrollableDiv" style={{
             height: 400,
@@ -119,6 +143,7 @@ function ViewPlaylist() {
                                 title={item.track === null ? null : item.track.name}
                                 description={item.track === null ? null : item.track.artists[0].name}
                             />
+                            <div><Button icon={<PlayCircleOutlined />} onClick={() => play(item.track.uri)} data-uri={`${item.id}`}>Play now</Button></div>
                             <div><Button icon={<PlusOutlined />} onClick={() => addToQueue(item.track.uri)}>Add to queue</Button></div>
                         </List.Item>
                     )}
