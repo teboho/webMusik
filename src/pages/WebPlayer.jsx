@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import withAuth from '../hocs/withAuth';
-import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled , MinusCircleOutlined} from '@ant-design/icons';
+import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled, PlayCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton, Slider } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
 import  InfiniteScroll from "react-infinite-scroll-component";
 import { AuthContext } from '../providers/authProvider/contexts';
+import { playerButtonStyle } from './player/styles';
 
 /**
  * Track shape and default...
@@ -99,6 +100,25 @@ const WebPlayer = (props) => {
                 if(btnControl){
                     btnControl.style.display = "inline";
                 }
+                
+                // this pirce of code will load the player onto the page instead of relying on the button click like before
+            //     const headers = {
+            //         Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            //         "Content-Type": "application/json"
+            //     };
+            //     const url = "https://api.spotify.com/v1/me/player";
+            //     fetch(url, {
+            //         headers,
+            //         method: "PUT",
+            //         body: JSON.stringify({
+            //             "device_ids": [device_id],
+            //             play: true
+            //         })
+            //     }).then(resp => {
+            //         console.log(JSON.stringify(resp));
+            //     }).catch(err => {
+            //         console.log(err);
+            //     });
             });
 
             player.addListener('not_ready', ({device_id}) => {
@@ -314,7 +334,11 @@ const WebPlayer = (props) => {
         })
     };
     const pullControl = (event) => {
-        if (deviceId.length === 0) return;
+        if (deviceId.length === 0) {
+            // alert('Did not get permissions. Reload and try again.');
+            customMessage("Did not get permissions. Reload and try again.")
+            return;
+        };
 
         const headers = {
             Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -334,13 +358,35 @@ const WebPlayer = (props) => {
             console.log(err);
         })
     };
+    const play = uri => {
+        console.log(uri);
+        // if (deviceId.length === 0) return;
+
+        // const headers = {
+        //     Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        //     "Content-Type": "application/json"
+        // };
+        // const url = "https://api.spotify.com/v1/me/player";
+        // fetch(url, {
+        //     headers,
+        //     method: "PUT",
+        //     body: JSON.stringify({
+        //         "context_uri": [deviceId],
+        //         play: true
+        //     })
+        // }).then(resp => {
+        //     console.log(JSON.stringify(resp));
+        // }).catch(err => {
+        //     console.log(err);
+        // })
+    }
 
     const playOrPause = useMemo(() => {
         return isPaused 
             ? 
-            <PlayCircleFilled key={"play"} onClick={resumePlayback} /> 
+            <PlayCircleFilled style={playerButtonStyle} key={"play"} onClick={resumePlayback} /> 
             : 
-            <PauseCircleFilled key={"pause"} onClick={pausePlayback} />;
+            <PauseCircleFilled style={playerButtonStyle} key={"pause"} onClick={pausePlayback} />;
     }, [isPaused]);
 
     const volumeChange = vol => {
@@ -413,7 +459,7 @@ const WebPlayer = (props) => {
                                 title={track.name}
                                 description={track.artists[0].name}
                             />
-                            {/* <div><Button icon={<MinusCircleOutlined />} >Dequeue</Button></div> */}
+                            <div><Button icon={<PlayCircleOutlined />} oncClick={() => play(track.uri)}>Play</Button></div>
                         </List.Item>
                     )}
                 />
@@ -427,7 +473,7 @@ const WebPlayer = (props) => {
                     <List
                         style={{
                             borderTop: "1px solid",
-                            width: 400,
+                            width: 300,
                             margin: "0 auto"
                         }}
                         itemLayout="horizontal"
@@ -437,9 +483,9 @@ const WebPlayer = (props) => {
                             style={{width: 300, margin: '0 auto'}}
                         >
                             <List.Item.Meta
-                            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                            title={<p>{item.posted} | {item.name}</p>}
-                            description={item.commentText}
+                                avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+                                title={<p>{item.posted} | {item.name}</p>}
+                                description={item.commentText}
                             />
                         </List.Item>
                         )}
@@ -475,9 +521,9 @@ const WebPlayer = (props) => {
                         />
                     }
                     actions={[
-                        <StepBackwardFilled key={"previous"} onClick={skipToPrevious} />,
+                        <StepBackwardFilled style={playerButtonStyle} key={"previous"} onClick={skipToPrevious} />,
                         playOrPause,
-                        <StepForwardFilled key={"next"} onClick={skipToNext} />,
+                        <StepForwardFilled style={playerButtonStyle} key={"next"} onClick={skipToNext} />,
                     ]}
                     
                 >
