@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import withAuth from "../hocs/withAuth"
-import SongItem from "./SongItem";
+import withAuth from "../../hocs/withAuth"
+import SongItem from "../../pages/SongItem";
 import { Avatar, Divider, Skeleton, Flex, List, Button, message, Card } from "antd";
 import { PlusOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import  InfiniteScroll from "react-infinite-scroll-component";
+import { scrollListStyle } from "./viewPlaylistStyles";
 
 /**
  * Track shape and default...
@@ -123,14 +124,7 @@ function ViewPlaylist() {
     }
 
     const scrollList = (
-        <div className="playlistContent" id="scrollableDiv" style={{
-            height: 400,
-            width: "75vw",
-            overflow: "auto",
-            padding: '0 16px',
-            margin: "10px auto",
-            border: '1px solid rgba(140, 140, 140, 0.35)'
-        }}>
+        <div className="playlistContent" id="scrollableDiv" style={scrollListStyle}>
              <InfiniteScroll 
                 dataLength={tracks.length}>
                     {/* {console.log(tracks.length)} */}

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
-import withAuth from '../hocs/withAuth';
+import withAuth from '../../hocs/withAuth';
 import { StepBackwardFilled, StepForwardFilled, PlayCircleFilled, PauseCircleFilled, PlayCircleOutlined } from '@ant-design/icons';
 import { Avatar, Card, Image, Button, Spin, List, Form, Input, Drawer, message, Skeleton, Slider } from 'antd';
 import { ErrorBoundary } from 'react-error-boundary';
 import  InfiniteScroll from "react-infinite-scroll-component";
-import { AuthContext } from '../providers/authProvider/contexts';
-import { playerButtonStyle } from './player/styles';
+import { AuthContext } from '../../providers/authProvider/contexts';
+import { cardSubstyles, commentItemStyle, commentsListContentStyle, gradientBackground, playerButtonStyle, playerStyle, queueContentStyle, volumeSliderStyle } from './styles';
 
 /**
  * Track shape and default...
@@ -461,14 +461,7 @@ const WebPlayer = (props) => {
         // document.body.style.background = `url(${currentTrackArt}) cover no-repeat fixed`
         // I need to show the queue on here
         const QueueDrawer = props => (<Drawer title="Queue" onClose={() => setOpen(false)} open={open}>
-            <div className="playlistContent" id="scrollableDiv" style={{
-                height: 400,
-                width: "300",
-                overflow: "auto",
-                padding: '0 16px',
-                margin: "0 auto",
-                border: '1px solid rgba(140, 140, 140, 0.35)'
-            }}>
+            <div className="queueContent" id="scrollableDiv" style={queueContentStyle}>
                 <InfiniteScroll 
                     dataLength={currentQueue.length}>
                 <List 
@@ -492,11 +485,7 @@ const WebPlayer = (props) => {
                 <ErrorBoundary fallback={<p>There's a problem getting the comments!!</p>}>
                     <h2>Comments</h2>
                     <List
-                        style={{
-                            borderTop: "1px solid",
-                            width: 300,
-                            margin: "0 auto"
-                        }}
+                        style={commentsListContentStyle}
                         itemLayout="horizontal"
                         dataSource={currentMemoComments}
                         renderItem={(item, index) => (
@@ -518,23 +507,10 @@ const WebPlayer = (props) => {
         return (
             <div style={{textAlign: "center"}}>
                 {contextHolder}
-                {/* <h1><em>web</em>Musik</h1> */}
-                
+            
                 <Card
-                    style={{ 
-                        width: 360, margin: "5px auto", 
-                        background: "rgb(255,251,244)",
-                        background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)",
-                        "-webkitbox-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
-                        "-moz-box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)",
-                        "box-shadow": "2px 6px 19px 0px rgba(0,0,0,0.75)"
-                    }}
-                    styles={{
-                        "actions": {
-                            background: "rgb(255,251,244)",
-                            background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)" 
-                        }                        
-                    }}
+                    style={playerStyle}
+                    styles={cardSubstyles}
                     cover={
                         <Image 
                             src={currentTrackArt}
@@ -554,7 +530,7 @@ const WebPlayer = (props) => {
                         description={currentArtistName}
                     />
                 </Card>
-                <div className='volumeSlider' style={{position: "absolute", top: 50, float: "left", height: 300}}>
+                <div className='volumeSlider' style={volumeSliderStyle}>
                     <Slider vertical={true}
                         min={0}
                         max={100}
@@ -568,7 +544,7 @@ const WebPlayer = (props) => {
                 <Button onClick={() => setOpen(true)}>Show Queue</Button>
                 <Button onClick={() => setOpenComments(true)}>Show Comments</Button>
                 <Form autoFocus={true}>
-                    <Form.Item id='inputComment' label="Add a comment" style={{width: "300px", margin: "0 auto"}}>
+                    <Form.Item id='inputComment' label="Add a comment" style={commentItemStyle}>
                         <Input.TextArea rows={3} placeholder='Comments...?' value={commentText} onChange={handleChange} />
                     </Form.Item>
                     <Button type='default' onClick={postComment}>

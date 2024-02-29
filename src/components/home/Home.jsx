@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { AuthContext } from "../providers/authProvider/contexts";
-import { clientId, getAccessToken, loginWithSpotify } from "./Profile";
-import withAuth from "../hocs/withAuth";
+import { AuthContext } from "../../providers/authProvider/contexts";
+import { clientId, getAccessToken, loginWithSpotify } from "../../pages/Profile";
+import withAuth from "../../hocs/withAuth";
 import { Button, Carousel, Flex, List } from 'antd';
 import { PlusOutlined } from "@ant-design/icons";
 import  InfiniteScroll from "react-infinite-scroll-component";
-import Playlist from "../components/Playlist";
+import Playlist from "../Playlist";
 import { Link } from "react-router-dom";
+import { featuredDivStyle, featuredH3Style, homeStyle } from "./HomeStyles";
 
 const contentStyle = {
     margin: 0,
@@ -58,39 +59,28 @@ const Home = () => {
     const featuredPlaylistsMemo = useMemo(() => {
         return featured;
     }, [featured]);
-    // const memoTracks = useMemo(() => {
-    //     return featuredPlaylistsMemo[currentSlide].tracks;
-    // }, [featured]);
 
     const featuredPlaylists = useMemo(() => {
         return featured.map((item, index) => 
-            (<div key={`playlist_${index}`} style={{padding: 20}}>
+            (<div key={`playlist_${index}`} style={featuredDivStyle}>
                 <h3 style={{background: `url(${item.images[0].url})`,
-                    margin: 0,
-                    height: '160px',
-                    color: '#fff',
-                    lineHeight: '160px',
-                    textAlign: 'center',}} >
-                        
-                    <Link to={`/ViewPlaylist?id=${item.id}`}>{item.name}</Link>
-                    
+                    ...featuredH3Style
+                    }} 
+                >
+                    <Link to={`/ViewPlaylist?id=${item.id}`}>{item.name}</Link>    
                 </h3>
                 {/* <p>{item.description}</p> */}
             </div>)
         );
     });
     return (
-        <div style={{textAlign: "center", textWrap: "pretty", width: "85%", margin: "0 auto"}}>
-            {/* <h1><em>web</em>Musik</h1> */}
+        <div style={homeStyle}>
             <div className="lastPlayed">
                 <h2>Featured</h2>
                 <Carousel afterChange={onChange} >
                     {featuredPlaylists}
                 </Carousel>
             </div>
-            {/* <div className="playlistDetails">
-                <p>{JSON.stringify(featuredPlaylistsMemo[currentSlideMemo])}</p>
-            </div> */}
         </div>
     )
 }
