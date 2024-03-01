@@ -1,5 +1,5 @@
 import React from 'react';
-import { loginWithSpotify } from '../utilities/Auth';
+import { fetchProfile, loginWithSpotify } from '../utilities/Auth';
 import { Button } from 'antd';
 import Welcome from '../components/welcome/Welcome';
 
@@ -11,6 +11,18 @@ const withAuth = (WrappedComponent) => {
 
     const WithAuth = (props) => {
         const token = localStorage.getItem("accessToken");
+
+        if (token) {
+            // Ath this rate we should redresh the token from here
+            fetchProfile(token)
+                .then(json => {
+                    console.log(json);
+                })
+                .catch(err => {
+                    console.log("There was an error");
+                })
+
+        }
 
         if (token === undefined || token === null) {
             return <Welcome loginWithSpotify={loginWithSpotify} />;

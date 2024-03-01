@@ -52,7 +52,7 @@ export const postCommentSuccessAction = createAction(
  */
 export const getCommentErrorAction = createAction(
     CommentsActionEnums.GetCommentError,
-    () => ({ isSuccess: false, isPending: false, isError: true })
+    () => ({ isSuccess: false, isPending: false, isError: true, comments: [] })
 );
 
 /**

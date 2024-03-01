@@ -143,7 +143,7 @@ export async function refreshAccessToken() {
  * @returns the json object containing the profile
  */
 export async function fetchProfile(token) {
-    const result = await fetch(
+    const response = await fetch(
         "https://api.spotify.com/v1/me",
         {
             method: "GET",
@@ -153,7 +153,15 @@ export async function fetchProfile(token) {
         }
     );
 
-    return await result.json();
+    if (response.status === 401) {
+        refreshAccessToken().then(res => {
+            document.location = '/';
+        }).catch(err => {
+            console.log("Could not refresh!!!");
+        })
+    }
+
+    return await response.json();
 }
 
  /**

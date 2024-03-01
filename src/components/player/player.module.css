@@ -1,0 +1,29 @@
+.playerButtonFontSize {
+    font-size: "36px";
+}
+.queueContentStyle {
+    height: 400;
+    width: "300";
+    overflow: "auto";
+    padding: '0 16px';
+    margin: "0 auto";
+    border: '1px solid rgba(140, 140, 140, 0.35)'
+}
+.commentsListContentStyle {
+    borderTop: "1px solid";
+    width: 300;
+    margin: "0 auto"
+}
+.gradientBackground {
+    background: "rgb(255,251,244)";
+    background: "linear-gradient(90deg, rgba(255,251,244,1) 0%, rgba(255,247,233,1) 54%, rgba(255,255,255,1) 96%)" 
+}
+.playerStyle { 
+    width: 360; 
+    margin: "5px auto"; 
+    -webkitbox-shadow: "2px 6px 19px 0px rgba(0,0,0,0.75)";
+    -moz-box-shadow: "2px 6px 19px 0px rgba(0,0,0,0.75)";
+    box-shadow: "2px 6px 19px 0px rgba(0,0,0,0.75)"
+}
+.volumeSliderStyle {position: "absolute"; top: 50; float: "left"; height: 300}
+.commentItemStyle {width: "300px"; margin: "0 auto"}

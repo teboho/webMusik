@@ -4,10 +4,11 @@ import { clientId, getAccessToken, loginWithSpotify } from "../../pages/Profile"
 import withAuth from "../../hocs/withAuth";
 import { Button, Carousel, Flex, List } from 'antd';
 import { PlusOutlined } from "@ant-design/icons";
-import  InfiniteScroll from "react-infinite-scroll-component";
-import Playlist from "../Playlist";
 import { Link } from "react-router-dom";
-import { featuredDivStyle, featuredH3Style, homeStyle } from "./HomeStyles";
+// import { featuredDivStyle, featuredH3Style, homeStyle } from "./HomeStyles";
+
+import homeStyles from './home.module.css';
+import { featuredH3Style } from "./HomeStyles";
 
 const contentStyle = {
     margin: 0,
@@ -62,22 +63,21 @@ const Home = () => {
 
     const featuredPlaylists = useMemo(() => {
         return featured.map((item, index) => 
-            (<div key={`playlist_${index}`} style={featuredDivStyle}>
-                <h3 style={{background: `url(${item.images[0].url})`,
-                    ...featuredH3Style
-                    }} 
-                >
-                    <Link to={`/ViewPlaylist?id=${item.id}`}>{item.name}</Link>    
-                </h3>
+            (<div key={`playlist_${index}`} className={homeStyles.featuredDivStyle} >
+                <div style={{ background: `url(${item.images[0].url}) center` }}>   
+                    <h3 className="" style={featuredH3Style}>
+                        <Link className="transparent" to={`/ViewPlaylist?id=${item.id}`}>{item.name}</Link>    
+                    </h3>
+                </div>
                 {/* <p>{item.description}</p> */}
             </div>)
         );
     });
     return (
-        <div style={homeStyle}>
-            <div className="lastPlayed">
-                <h2>Featured</h2>
-                <Carousel afterChange={onChange} >
+        <div style={{width: "100%"}}>
+            <div className="featured">
+                <h2 style={{textAlign: "center"}}>Featured</h2>
+                <Carousel afterChange={onChange} style={{minWidth: "360px", marginLeft: "auto", marginRight: "auto"}}>
                     {featuredPlaylists}
                 </Carousel>
             </div>

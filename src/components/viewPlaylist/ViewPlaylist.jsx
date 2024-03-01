@@ -24,7 +24,7 @@ const track = {
 function ViewPlaylist() {
     const [loading, setLoading] = useState(false);
     const [tracks, setTracks] = useState([]); //songs
-    const [playlistObj, setPlaylistObj] = useState([]); //songs
+    const [playlistObj, setPlaylistObj] = useState({}); //songs
     const queryString = new URLSearchParams(window.location.search);
     const id = queryString.get('id');
     const [messageApi, contextHolder] = message.useMessage();
@@ -100,6 +100,7 @@ function ViewPlaylist() {
     }
 
     
+    
     /**
      * 
      * @param {*} uri specific song uri
@@ -123,11 +124,32 @@ function ViewPlaylist() {
         }).catch(err => console.log("Could not play new testament"));
     }
 
+    /**
+     * 
+     * @param {*} uri specific (albums/artists/playlists) uri
+     */
+    const playBulk = uri => {
+        const url = "https://api.spotify.com/v1/me/player/play";
+        // const searchParams = new URLSearchParams();
+        const headers = {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "Content-Type": "application/json"
+        };
+        fetch(url, {
+            headers,
+            method: "PUT",
+            body: JSON.stringify({
+                context_uri: uri
+            })
+        }).then(() => {
+            customMessage("Playing your song");
+        }).catch(err => console.log("Could not play new testament"));
+    }
+
     const scrollList = (
         <div className="playlistContent" id="scrollableDiv" style={scrollListStyle}>
              <InfiniteScroll 
                 dataLength={tracks.length}>
-                    {/* {console.log(tracks.length)} */}
                 <List 
                     dataSource={tracks}
                     renderItem={item => (
@@ -145,17 +167,32 @@ function ViewPlaylist() {
             </InfiniteScroll>
         </div>
     );
-
+    
+    // const desc = props => {
+    //     return <>{props.children}</>;
+    // };
+    // const instDesc = <desc></desc>;
+    // desc.innerHTML
+    // const description = document.createElement('p');
+    // description.innerHTML = playlistObj.description;
     return (
         <div style={{textAlign: "center"}}>
             <div className="playlistHeader" style={{
                 backdropFilter: "blur(10px)",
                 background: `url(${image ? image : ''})`,
                 color: "white",
-                minHeight: 200
+                minHeight: 200, 
+                width: 360, 
+                marginLeft: "auto",
+                marginRight: "auto",
+                // lineHeight: '150px',
+                textWrap: "wrap"
             }}>
-                <h1>{playlistObj.name}</h1>
-                <p>{playlistObj.description}</p>
+                <br />
+                <br />
+                <h1 className={"transparent dark-font w-text"}>{playlistObj.name}</h1>
+                <p className="transparent dark-font w-text" style={{width: "90%", overflow: "hidden"}}>{playlistObj.description}</p>
+                <div><Button icon={<PlayCircleOutlined />} onClick={() => playBulk(playlistObj.uri)}>Play</Button></div>
             </div>
             
             {contextHolder}

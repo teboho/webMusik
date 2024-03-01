@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import  InfiniteScroll from "react-infinite-scroll-component";
 import { AuthContext } from '../../providers/authProvider/contexts';
 import { cardSubstyles, commentItemStyle, commentsListContentStyle, gradientBackground, playerButtonStyle, playerStyle, queueContentStyle, volumeSliderStyle } from './styles';
+import { CommentStateContext } from '../../providers/commentProvider/contexts';
 
 /**
  * Track shape and default...
@@ -29,10 +30,12 @@ const WebPlayer = (props) => {
     const [current_track, setTrack] = useState(track);
     const [deviceId, setDeviceId] = useState('');
     const [commentText, setCommentText] = useState('');
-    const [currentComments, setCurrentComments] = useState([]);
+    // const [currentComments, setCurrentComments] = useState([]);
     const [open, setOpen] = useState(false);
-    const [openComments, setOpenComments] = useState(false);
-    const [commentModalOpen, setCommentModalOpen] = useState(false);
+
+    const [openComments, setOpenComments] = useState(false); // opens the comments modal
+    const {commentState, getComments, postComment} = useContext(CommentStateContext); // the comments provider
+
     const [queue, setQueue] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
     const [volume, setVolume] = useState(30);
@@ -164,30 +167,19 @@ const WebPlayer = (props) => {
     }, [isActive])
 
     // getting comments
-    const getComments = () => {
+    useEffect(() => {
         console.log(current_track);
         // We will pull the relevant comments of this track from the backend 
-        const url = "http://localhost:5101/api/Comments/GetByTrack/" + current_track?.id; 
-        fetch(url)
-            .then(data => data.json())
-            .then(data => {
-                console.log(data);
-                if (data.status > 400) {
-                    setCurrentComments(prev => []);
-                } else {
-                    setCurrentComments(data);
-                }
-            })
-            .catch(err => console.log(err));
-    };
-    useEffect(getComments, [current_track]);
+        // \current_track?.id; 
+        getComments(current_track?.id)
+    }, [current_track]);
 
     useEffect(() => {
-        if (!currentComments) {
+        if (commentState.comments.length === 0) {
             return;
         }
         // we need to get the profiles
-        currentComments.forEach((currComment, i) => {
+        commentState.comments.forEach((currComment, i) => {
             const url = "https://api.spotify.com/v1/users/" + currComment.userId;
             fetch(url, {
                 headers: {
@@ -199,7 +191,7 @@ const WebPlayer = (props) => {
                 currComment.name = data.display_name;
             })
         })
-    }, [currentComments]);
+    }, [commentState]);
 
     useEffect(() => {
         const url = "https://api.spotify.com/v1/me/player/queue";
@@ -237,9 +229,6 @@ const WebPlayer = (props) => {
     const currentTrackArt = useMemo(() => {
         return current_track?.album.images[0].url;
     }, [current_track]);
-    const currentMemoComments = useMemo(() => {
-        return currentComments;
-    }, [currentComments]);
     const currentQueue = useMemo(() => {
         return queue;
     }, [queue]);
@@ -252,7 +241,7 @@ const WebPlayer = (props) => {
         messageApi.info(message);
     };
 
-    const postComment = e => {
+    const postCommentFetch = e => {
         // we can get the user Id from the context provider...
         // date will be saved in the back
         const body = JSON.stringify({
@@ -262,30 +251,13 @@ const WebPlayer = (props) => {
             posted: new Date(Date.now()).toISOString()
         });
         console.log(body);
-        
-        const url = "http://localhost:5101/api/Comments/PostComment";
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            mode: "cors",
-            body: body
-        })
-        .then(response => {
-            if (199 < response < 300) {
-                // get new comments
-                getComments();
-                customMessage("Posted your comment");
-                setCommentText('');
-            }
-            response.json()
-        })
-        .then(data => {
-            console.log(data);
-        }).catch(err => {
-            console.log(err);
-        });
+        postComment(body);
+        if (commentState.isSuccess) {
+            customMessage("Comment posted");
+            setCommentText('');
+        } else if (commentState.isError) {
+            customMessage("There was an issues posting your comment. Please try again later.")
+        }
     };
 
     const pausePlayback = e => {
@@ -487,7 +459,7 @@ const WebPlayer = (props) => {
                     <List
                         style={commentsListContentStyle}
                         itemLayout="horizontal"
-                        dataSource={currentMemoComments}
+                        dataSource={commentState.comments}
                         renderItem={(item, index) => (
                         <List.Item
                             style={{width: 300, margin: '0 auto'}}
@@ -507,7 +479,7 @@ const WebPlayer = (props) => {
         return (
             <div style={{textAlign: "center"}}>
                 {contextHolder}
-            
+
                 <Card
                     style={playerStyle}
                     styles={cardSubstyles}
@@ -530,7 +502,7 @@ const WebPlayer = (props) => {
                         description={currentArtistName}
                     />
                 </Card>
-                <div className='volumeSlider' style={volumeSliderStyle}>
+                {/* <div className='volumeSlider' style={volumeSliderStyle}>
                     <Slider vertical={true}
                         min={0}
                         max={100}
@@ -538,19 +510,21 @@ const WebPlayer = (props) => {
                         onChange={volumeChange}
                         onChangeComplete={volumeChangeComplete}
                     />
-                </div>
+                </div> */}
                 {/* Progressbar */}
                 {/* Comments */}
-                <Button onClick={() => setOpen(true)}>Show Queue</Button>
-                <Button onClick={() => setOpenComments(true)}>Show Comments</Button>
+                <Button >Recently Played</Button>
+                <Button onClick={() => setOpen(true)}>Queue</Button>
+                <Button onClick={() => setOpenComments(true)}>Comments</Button>
                 <Form autoFocus={true}>
                     <Form.Item id='inputComment' label="Add a comment" style={commentItemStyle}>
                         <Input.TextArea rows={3} placeholder='Comments...?' value={commentText} onChange={handleChange} />
                     </Form.Item>
-                    <Button type='default' onClick={postComment}>
+                    <Button type='default' onClick={postCommentFetch}>
                         Post comment
                     </Button>
-                </Form>
+                </Form>            
+
                 <QueueDrawer />
                 <CommentsDrawer />
             </div>
