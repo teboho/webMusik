@@ -351,27 +351,29 @@ const WebPlayer = (props) => {
             console.log(err);
         })
     };
-    const play = uri => {
-        console.log(uri);
-        // if (deviceId.length === 0) return;
 
-        // const headers = {
-        //     Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        //     "Content-Type": "application/json"
-        // };
-        // const url = "https://api.spotify.com/v1/me/player";
-        // fetch(url, {
-        //     headers,
-        //     method: "PUT",
-        //     body: JSON.stringify({
-        //         "context_uri": [deviceId],
-        //         play: true
-        //     })
-        // }).then(resp => {
-        //     console.log(JSON.stringify(resp));
-        // }).catch(err => {
-        //     console.log(err);
-        // })
+    /**
+     * 
+     * @param {*} uri specific song uri
+     */
+    const play = uri => {
+        const url = "https://api.spotify.com/v1/me/player/play";
+        // const searchParams = new URLSearchParams();
+        // searchParams.append("device_id", device_id);
+        const headers = {
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+            "Content-Type": "application/json"
+        };
+        fetch(url, {
+            headers,
+            method: "PUT",
+            body: JSON.stringify({
+                uris: [uri]
+            })
+        }).then(() => {
+            customMessage("Playing your song");
+            setOpen(false);
+        }).catch(err => console.log("Could not play new testament"));
     }
 
     const playOrPause = useMemo(() => {
@@ -445,7 +447,8 @@ const WebPlayer = (props) => {
                                 title={track.name}
                                 description={track.artists[0].name}
                             />
-                            <div><Button icon={<PlayCircleOutlined />} oncClick={() => play(track.uri)}>Play</Button></div>
+                            <button onClick={() => play(track.uri)}><PlayCircleOutlined />Play</button>
+                            {/* <Button icon={<PlayCircleOutlined />} oncClick={() => play(track.uri)}>Play</Button> */}
                         </List.Item>
                     )}
                 />

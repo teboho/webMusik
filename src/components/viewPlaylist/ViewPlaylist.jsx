@@ -99,30 +99,28 @@ function ViewPlaylist() {
         .catch(err => console.log(err))
     }
 
-    
-    
     /**
      * 
      * @param {*} uri specific song uri
      */
-    const play = uri => {
-        const url = "https://api.spotify.com/v1/me/player/play";
-        // const searchParams = new URLSearchParams();
-        // searchParams.append("device_id", device_id);
-        const headers = {
-            Authorization: "Bearer " + localStorage.getItem("accessToken"),
-            "Content-Type": "application/json"
-        };
-        fetch(url, {
-            headers,
-            method: "PUT",
-            body: JSON.stringify({
-                uris: [uri]
-            })
-        }).then(() => {
-            customMessage("Playing your song");
-        }).catch(err => console.log("Could not play new testament"));
-    }
+        const play = uri => {
+            const url = "https://api.spotify.com/v1/me/player/play";
+            // const searchParams = new URLSearchParams();
+            // searchParams.append("device_id", device_id);
+            const headers = {
+                Authorization: "Bearer " + localStorage.getItem("accessToken"),
+                "Content-Type": "application/json"
+            };
+            fetch(url, {
+                headers,
+                method: "PUT",
+                body: JSON.stringify({
+                    uris: [uri]
+                })
+            }).then(() => {
+                customMessage("Playing your song");
+            }).catch(err => console.log("Could not play new testament"));
+        }
 
     /**
      * 
