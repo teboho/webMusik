@@ -516,7 +516,7 @@ const WebPlayer = (props) => {
                 </div> */}
                 {/* Progressbar */}
                 {/* Comments */}
-                <Button >Recently Played</Button>
+                {/* <Button >Recently Played</Button> */}
                 <Button onClick={() => setOpen(true)}>Queue</Button>
                 <Button onClick={() => setOpenComments(true)}>Comments</Button>
                 <Form autoFocus={true}>
