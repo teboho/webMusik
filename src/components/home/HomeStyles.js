@@ -14,3 +14,9 @@ export const featuredH3Style = {
     lineHeight: '160px',
     textAlign: 'center',
 }
+
+export const carouselStyle = {
+    minWidth: "360px", 
+    marginLeft: "auto", 
+    marginRight: "auto"
+}

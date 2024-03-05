@@ -5,19 +5,9 @@ import withAuth from "../../hocs/withAuth";
 import { Button, Carousel, Flex, List } from 'antd';
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-// import { featuredDivStyle, featuredH3Style, homeStyle } from "./HomeStyles";
 
 import homeStyles from './home.module.css';
-import { featuredH3Style } from "./HomeStyles";
-
-const contentStyle = {
-    margin: 0,
-    height: '160px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-  };
+import { carouselStyle, featuredH3Style } from "./HomeStyles";
 
 const Home = () => {
     const [featured, setFeatured] = useState([]);
@@ -77,7 +67,7 @@ const Home = () => {
         <div style={{width: "100%"}}>
             <div className="featured">
                 <h2 style={{textAlign: "center"}}>Featured</h2>
-                <Carousel afterChange={onChange} style={{minWidth: "360px", marginLeft: "auto", marginRight: "auto"}}>
+                <Carousel afterChange={onChange} style={carouselStyle}>
                     {featuredPlaylists}
                 </Carousel>
             </div>
