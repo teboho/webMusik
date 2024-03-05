@@ -20,17 +20,17 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ## Some Screenshots
 
-<img src="assets/Welcome.png" alt="Welcome" width="500" height="auto">  
-*Welcome*
+<img src="assets/welcome.png" alt="Welcome" width="500" height="auto">  
+<em>Welcome</em>
 
 <img src="assets/home.png" alt="Home" width="500" height="auto">  
-*Home*
+<em>Home</em>
 
 <img src="assets/queue.png" alt="Queue" width="500" height="auto">  
-*Queue*
+<em>Queue</em>
 
 <img src="assets/viewPlaylist.png" alt="View Playlist" width="500" height="auto">  
-*View Playlist*
+<em>View Playlist</em>
 
 ---
 
