@@ -21,7 +21,6 @@ const withAuth = (WrappedComponent) => {
                 .catch(err => {
                     console.log("There was an error");
                 })
-
         }
 
         if (token === undefined || token === null) {

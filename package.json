@@ -1,23 +1,31 @@
 {
   "name": "webMusik",
   "version": "0.1.0",
+  "author": {
+    "name": "@teboho on github"
+  },
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.14.1",
+    "dotenv": "^16.4.5",
+    "firebase": "^11.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.12",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.22.0",
     "react-scripts": "5.0.1",
+    "react-sortablejs": "^6.1.4",
     "redux-actions": "^3.0.0",
+    "sortablejs": "^1.15.2",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/sortablejs": "^1.15.8"
   },
   "scripts": {
     "start": "react-scripts start",

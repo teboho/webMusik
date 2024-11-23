@@ -1,8 +1,10 @@
-import { Button, Row, Col, Carousel, Space } from 'antd';
+import { Button, Row, Col, Carousel, Space, Modal, Flex, ConfigProvider } from 'antd';
 import { loginWithSpotify } from '../../utilities/Auth';
 import musicNotes2 from './musicNotes2Cropped.png';
 import vinyl from './webMusilkVinyl.gif';
 import vinylGradient from './vinylGradient.gif';
+import SignUp from '../SignUp';
+import { useState } from 'react';
 
 const contentStyle = {
     margin: 0,
@@ -14,9 +16,7 @@ const contentStyle = {
 };
 
 const Welcome = ({loginWithSpotify}) => {
-    const onChange = (currentSlide) => {
-      console.log(currentSlide);
-    };
+    const [modalOpen, setModalOpen] = useState(false);
     return (
         <>
             <Row>
@@ -30,33 +30,30 @@ const Welcome = ({loginWithSpotify}) => {
                     }}>
                         <h1>webMusik</h1>
                         <h3>Play music with your existing Spotify account</h3>
-                        <Button style={{
-                            fontWeight: "bold"
-                        }}
-                        onClick={loginWithSpotify}>Login with Spotify</Button>
+                        <p>Your spotify email address must be the approved one.</p>
+                        <Flex gap="middle" wrap>
+                            <Button 
+                                type='primary' 
+                                style={{ fontWeight: "bold" }}
+                                onClick={loginWithSpotify}
+                            >
+                                Login with Spotify
+                            </Button>
+                            <Button onClick={() => setModalOpen(true)} type='dashed'>
+                                Request Access
+                            </Button>
+                        </Flex>  
                     </div>
+                    <Modal loading={false}
+                        title="Request Access" open={modalOpen} footer={null} onCancel={() => setModalOpen(false)}>
+                        <SignUp setModalOpen={setModalOpen} />
+                    </Modal>
                 </div>
                 <Space />
                 <div>
                     <img src={vinylGradient} alt="" style={{width: 400, height: "auto", marginLeft: "auto", marginRight: "auto", opacity: 0.5}} />
                 </div>
             </Row>
-                {/* <Row> */}
-                    {/* <Carousel afterChange={onChange} style={{height: "50vh"}}>
-                        <div>
-                            <h3 style={contentStyle}>Play songs</h3>
-                        </div>
-                        <div>
-                            <h3 style={contentStyle}>View Playlists</h3>
-                        </div>
-                        <div>
-                            <h3 style={contentStyle}>View Queue</h3>
-                        </div>
-                        <div>
-                            <h3 style={contentStyle}>Search songs</h3>
-                        </div>
-                    </Carousel> */}
-                {/* </Row> */}
         </>
     );
 }
