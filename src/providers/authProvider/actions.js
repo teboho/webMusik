@@ -8,6 +8,7 @@ export const AuthActionEnums = {
     setToken: "SET_TOKEN",
     setProfileImage: "SET_PROFILE_IMAGE",
     setProfile: "SET_PROFILE_OBJECT",
+    setAuthorised: "SET_AUTHORISED"
 };
 
 /**
@@ -41,5 +42,12 @@ export const setProfileAction = createAction(
     AuthActionEnums.setProfile, 
     (profile) => {
         return {profile};
+    }
+);
+
+export const setAuthorisedAction = createAction(
+    AuthActionEnums.setAuthorised,
+    (authorised) => {
+        return {authorised};
     }
 );

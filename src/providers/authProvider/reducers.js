@@ -1,9 +1,6 @@
 import { handleActions } from "redux-actions"; 
 import { AuthActionEnums } from './actions';
 
-/**
- * 
- */
 export const authReducer = handleActions(
     {
         [AuthActionEnums.setToken]: (state, action) => ({
@@ -19,8 +16,12 @@ export const authReducer = handleActions(
             ...state,
             profile: action.payload.profile
         })}, // this handler will change the value of the profile object in the state
+        [AuthActionEnums.setAuthorised]: (state, action) => ({
+            ...state,
+            authorised: action.payload.authorised
+        }) // this handler will change the value of the authorised flag in the state
     },
     {
-        token: "", profileImage: "", profile: {}
+        token: "", profileImage: "", profile: {}, authorised: false
     } // this is the default state
 )

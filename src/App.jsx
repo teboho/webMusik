@@ -1,21 +1,22 @@
+import { Layout } from 'antd';
+import { ErrorBoundary } from 'react-error-boundary';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { appFooterStyle, appHeaderStyle, gradientBackground } from './AppStyles';
 import Home from './components/home/Home';
-import About from './pages/About';
-import { Layout, Anchor } from 'antd';
+import WebPlayer from './components/player/WebPlayer';
+import ViewPlaylist from './components/viewPlaylist/ViewPlaylist';
 import NavBar from './NavBar';
-import Search from './pages/Search';
-import Profile from './pages/Profile';
-import AuthProvider from './providers/authProvider';
+import About from './pages/About';
 import Callback from './pages/Callback';
 import Playlists from './pages/Playlists';
-import WebPlayer from './components/player/WebPlayer';
-import { appFooterStyle, appHeaderStyle, gradientBackground } from './AppStyles';
-import ViewPlaylist from './components/viewPlaylist/ViewPlaylist';
-import { ErrorBoundary } from 'react-error-boundary';
+import Profile from './pages/Profile';
+import Search from './pages/Search';
+import SignUps from './pages/SignUps';
+import AuthProvider from './providers/authProvider';
 import CommentsProvider from './providers/commentProvider';
 
-const { Header, Content, Footer, Side } = Layout;
+const { Header, Content, Footer } = Layout;
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                   <Route path="callback" element={<Callback />} />
                   <Route path="playlists" element={<Playlists />} />
                   <Route path="ViewPlaylist" element={<ViewPlaylist />} />
+                  <Route path="signups" element={<SignUps />} />
                   {/* <Route path="WebPlayer" element={<WebPlayer />} /> */}
                 </Routes>     
               </ErrorBoundary>   

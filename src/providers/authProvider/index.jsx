@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { authReducer, } from './reducers';
 import { AuthContext } from './contexts'
-import { setProfileAction, setProfileImageAction, } from './actions';
+import { setAuthorisedAction, setProfileAction, setProfileImageAction, } from './actions';
 import { fetchProfile } from '../../utilities/Auth';
 import { Drawer, Image, Descriptions, Button } from 'antd';
 
@@ -46,7 +46,7 @@ export function logOut() {
  */
 function AuthProvider(props) {
     // Making the state with the reducer
-    const [authState, dispatch] = useReducer(authReducer, {token: "", profileImage: "", profile: defaultProfile});
+    const [authState, dispatch] = useReducer(authReducer, {token: "", profileImage: "", profile: defaultProfile, authorised: false});
     const [open, setOpen] = useState(false);
 
     const accessToken = localStorage.getItem("accessToken");
@@ -86,6 +86,10 @@ function AuthProvider(props) {
 
     const onClose = () => {
         setOpen(false);
+    }
+
+    const setAuthorised = (authorised) => {
+        dispatch(setAuthorisedAction(authorised));
     }
 
     const items = [];
@@ -141,7 +145,7 @@ function AuthProvider(props) {
     );
 
     return (
-        <AuthContext.Provider value={{authState, saveProfileImage, saveProfile, showDrawer}}>
+        <AuthContext.Provider value={{authState, saveProfileImage, saveProfile, showDrawer, setAuthorised}}>
             {/* context for drawer */}
             {profileDrawer}
             {props.children}

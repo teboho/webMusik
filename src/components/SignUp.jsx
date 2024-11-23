@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { Form, Input, Button, message } from 'antd';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 
 const FIREBASE_CONFIGURATION = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
@@ -13,7 +14,8 @@ const FIREBASE_CONFIGURATION = {
 };
 
 // Initialize Firebase
-const app = initializeApp(FIREBASE_CONFIGURATION);
+const app = !getApps().length ? initializeApp(FIREBASE_CONFIGURATION) : getApp(); 
+
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);

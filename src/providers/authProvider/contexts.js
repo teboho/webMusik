@@ -1,3 +1,7 @@
 import { createContext } from "react"; 
 
-export const AuthContext = createContext({});
+const defaultAuthState = {
+    token: "", profileImage: "", profile: {}, authorised: false
+}
+
+export const AuthContext = createContext(defaultAuthState);
