@@ -3,7 +3,7 @@
 ## Info
 
 Normal users can login with their spotify account and search for songs, albums and artists.  
-(Coming soon) They can also play songs and add them to their playlists.  
+They can also play songs and view them to their playlists.  
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
